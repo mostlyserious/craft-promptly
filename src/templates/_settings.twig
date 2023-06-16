@@ -1,0 +1,35 @@
+{% import '_includes/forms' as forms %}
+{% import 'promptly/_macros' as macros %}
+
+{% set config = craft.app.config.getConfigFromFile('promptly') %}
+
+<div class="settings">
+    {{ forms.autosuggestField({
+        label: 'OpenAI API Key',
+        instructions: 'Required [OpenAI API](https://platform.openai.com/account/api-keys) key to access GPT.',
+        id: 'openAiKey',
+        name: 'openAiKey',
+        value: settings.openAiKey,
+        required: true,
+        errors: settings.getErrors('openAiKey'),
+        disabled: config.openAiKey|default('') is not empty,
+        warning: macros.configWarning('openAiKey', 'promptly'),
+        suggestEnvVars: true
+    }) }}
+
+    {{ forms.selectField({
+        label: 'GPT Model',
+        instructions: '',
+        id: 'gptModel',
+        name: 'gptModel',
+        value: settings.gptModel,
+        required: true,
+        errors: settings.getErrors('gptModel'),
+        disabled: config.gptModel|default('') is not empty,
+        warning: macros.configWarning('gptModel', 'promptly'),
+        options: [
+            { label: 'GPT-3.5', value: 'gpt-3.5-turbo' },
+            { label: 'GPT-4', value: 'gpt-4' }
+        ]
+    }) }}
+</div>

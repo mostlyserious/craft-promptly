@@ -1,0 +1,48 @@
+{
+    "name": "mostlyserious/craft-promptly",
+    "description": "Revolutionize content creation in Craft by leveraging the power of AI, giving superpowers to your content creators to help them brainstorm and edit content with an AI assistant directly within Craft CMS.",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "license": "proprietary",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "promptly",
+        "openai",
+        "ai",
+        "gpt"
+    ],
+    "support": {
+        "email": "devops@mostlyserious.io",
+        "issues": "https://github.com/mostlyserious/craft-promptly/issues",
+        "source": "https://github.com/mostlyserious/craft-promptly",
+        "docs": "https://github.com/mostlyserious/craft-promptly"
+    },
+    "authors": [
+        {
+            "name": "Mostly Serious",
+            "homepage": "https://www.mostlyserious.io"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "MostlySerious\\Promptly\\": "src/"
+        }
+    },
+    "require": {
+        "craftcms/cms": "^4.0.0",
+        "orhanerday/open-ai": "^4.7"
+    },
+    "extra": {
+        "name": "Promptly",
+        "handle": "promptly"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true
+        }
+    }
+}
