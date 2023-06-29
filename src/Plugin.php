@@ -10,6 +10,7 @@ use craft\helpers\UrlHelper;
 use craft\events\PluginEvent;
 use craft\base\Plugin as BasePlugin;
 use MostlySerious\Promptly\Models\Settings;
+use MostlySerious\Promptly\Migrations\Install;
 
 /**
  * Class Plugin
@@ -57,6 +58,10 @@ class Plugin extends BasePlugin
             $settings = $this->getSettings();
 
             if ($settings->openAiKey) {
+                // This can't be right but these tables are just not getting reliably installed.
+                // Need to dig into this later.
+                Install::ensure();
+
                 $this->initAssets();
                 $this->initRedactor();
             }

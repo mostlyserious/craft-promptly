@@ -8,6 +8,10 @@ use MostlySerious\Promptly\Records\PromptlyCustomPromptRecord;
 
 class Install extends Migration
 {
+    public static function ensure()
+    {
+        return (new static)->safeUp();
+    }
     /**
      * @inheritdoc
      */
