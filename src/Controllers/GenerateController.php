@@ -54,7 +54,13 @@ class GenerateController extends BaseController
 
         header('Content-type: text/event-stream');
 
+        Craft::debug($endpoint);
+        Craft::debug($passed_args);
+
         return $this->openai->$endpoint($passed_args, function ($_, $data) {
+            Craft::debug($_);
+            Craft::debug($data);
+
             echo $data;
 
             ob_flush();
