@@ -6,7 +6,7 @@
         on:click={() => $isActive = false}
         transition:fade={{ duration: 200 }}>
     </div>
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
     <div class="modal elementselectormodal"
         aria-labelledby="modal-promptly-heading"
         aria-modal="true"
@@ -85,6 +85,8 @@
 
     let dropdownActive = false;
 
+    setContext('redactor', redactor);
+
     $: if (!$isActive) {
         controller.abort();
         $answer = null;
@@ -96,9 +98,9 @@
         $category = categories[0];
     }
 
-    $hasContent = !!redactor.cleaner.getFlatText(preview).trim();
-
-    setContext('redactor', redactor);
+    $: if ($isActive === redactor.uuid) {
+        $hasContent = !!redactor.cleaner.getFlatText(preview).trim();
+    }
 
     fetch('/admin/actions/promptly/prompts')
         .then(res => res.json())

@@ -6,7 +6,7 @@
         <button type="button" class="btn" on:click={() => $isActive = false}>
             Cancel
         </button>
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
         <div class="btngroup"
             on:click|stopPropagation>
             <button type="submit"
