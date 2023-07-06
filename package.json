@@ -10,8 +10,8 @@
     "postcss-functions": "^4.0.2",
     "postcss-import": "^15.0.0",
     "postcss-preset-env": "^7.8.1",
-    "svelte": "^3.50.1",
-    "tailwindcss": "^3.1.8"
+    "svelte": "^4.0.5",
+    "tailwindcss": "^3.3.2"
   },
   "dependencies": {
     "@bpmn-io/snarkdown": "^2.2.0"
