@@ -6611,7 +6611,7 @@ var __publicField = (obj, key, value) => {
   }
   function get_each_context(ctx, list, i) {
     const child_ctx = ctx.slice();
-    child_ctx[15] = list[i];
+    child_ctx[14] = list[i];
     return child_ctx;
   }
   function create_if_block(ctx) {
@@ -6648,7 +6648,7 @@ var __publicField = (obj, key, value) => {
       }
     });
     let each_value = ensure_array_like(categories);
-    const get_key = (ctx2) => ctx2[15].handle;
+    const get_key = (ctx2) => ctx2[14].handle;
     for (let i = 0; i < each_value.length; i += 1) {
       let child_ctx = get_each_context(ctx, each_value, i);
       let key = get_key(child_ctx);
@@ -6740,7 +6740,7 @@ var __publicField = (obj, key, value) => {
       },
       p(ctx2, dirty) {
         const sidebaritem_changes = {};
-        if (dirty & 262144) {
+        if (dirty & 131072) {
           sidebaritem_changes.$$scope = { dirty, ctx: ctx2 };
         }
         sidebaritem.$set(sidebaritem_changes);
@@ -6873,7 +6873,7 @@ var __publicField = (obj, key, value) => {
     };
   }
   function create_default_slot_1(ctx) {
-    let t0_value = ctx[15].label + "";
+    let t0_value = ctx[14].label + "";
     let t0;
     let t1;
     return {
@@ -6900,7 +6900,7 @@ var __publicField = (obj, key, value) => {
     let current;
     sidebaritem = new SidebarItem({
       props: {
-        action: ctx[15],
+        action: ctx[14],
         $$slots: { default: [create_default_slot_1] },
         $$scope: { ctx }
       }
@@ -6921,7 +6921,7 @@ var __publicField = (obj, key, value) => {
       p(new_ctx, dirty) {
         ctx = new_ctx;
         const sidebaritem_changes = {};
-        if (dirty & 262144) {
+        if (dirty & 131072) {
           sidebaritem_changes.$$scope = { dirty, ctx };
         }
         sidebaritem.$set(sidebaritem_changes);
@@ -6963,7 +6963,7 @@ var __publicField = (obj, key, value) => {
       },
       p(ctx2, dirty) {
         const access_changes = {};
-        if (dirty & 262148) {
+        if (dirty & 131076) {
           access_changes.$$scope = { dirty, ctx: ctx2 };
         }
         access.$set(access_changes);
@@ -7135,9 +7135,16 @@ var __publicField = (obj, key, value) => {
       component: Edit
     }
   ];
+  fetch("/admin/actions/promptly/prompts").then((res) => res.json()).then((res) => actions.set(res.concat([
+    {
+      label: "New Prompt",
+      handle: "new",
+      description: "",
+      prompt: ""
+    }
+  ])));
   function instance($$self, $$props, $$invalidate) {
     let $isActive;
-    let $customPrompts;
     let $hasContent;
     let $category;
     let $isBusy;
@@ -7145,29 +7152,16 @@ var __publicField = (obj, key, value) => {
     let $screen;
     let $hasAccess;
     component_subscribe($$self, isActive, ($$value) => $$invalidate(1, $isActive = $$value));
-    component_subscribe($$self, actions, ($$value) => $$invalidate(10, $customPrompts = $$value));
-    component_subscribe($$self, hasContent, ($$value) => $$invalidate(11, $hasContent = $$value));
+    component_subscribe($$self, hasContent, ($$value) => $$invalidate(10, $hasContent = $$value));
     component_subscribe($$self, category, ($$value) => $$invalidate(2, $category = $$value));
-    component_subscribe($$self, isBusy, ($$value) => $$invalidate(12, $isBusy = $$value));
-    component_subscribe($$self, answer, ($$value) => $$invalidate(13, $answer = $$value));
+    component_subscribe($$self, isBusy, ($$value) => $$invalidate(11, $isBusy = $$value));
+    component_subscribe($$self, answer, ($$value) => $$invalidate(12, $answer = $$value));
     component_subscribe($$self, screen, ($$value) => $$invalidate(4, $screen = $$value));
     component_subscribe($$self, hasAccess, ($$value) => $$invalidate(5, $hasAccess = $$value));
     let { redactor } = $$props;
     const preview = redactor.source.getCode();
     let dropdownActive = false;
     setContext("redactor", redactor);
-    fetch("/admin/actions/promptly/prompts").then((res) => res.json()).then((res) => set_store_value(
-      actions,
-      $customPrompts = res.concat([
-        {
-          label: "New Prompt",
-          handle: "new",
-          description: "",
-          prompt: ""
-        }
-      ]),
-      $customPrompts
-    ));
     function onKeydown(event) {
       if (event.code === "Escape") {
         set_store_value(isActive, $isActive = false, $isActive);

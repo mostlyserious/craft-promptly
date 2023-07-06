@@ -76,6 +76,15 @@
             component: Edit
         }
     ];
+
+    fetch('/admin/actions/promptly/prompts')
+        .then(res => res.json())
+        .then(res => customPrompts.set(res.concat([ {
+            label: 'New Prompt',
+            handle: 'new',
+            description: '',
+            prompt: ''
+        } ])));
 </script>
 
 <script>
@@ -101,15 +110,6 @@
     $: if ($isActive === redactor.uuid) {
         $hasContent = !!redactor.cleaner.getFlatText(preview).trim();
     }
-
-    fetch('/admin/actions/promptly/prompts')
-        .then(res => res.json())
-        .then(res => $customPrompts = res.concat([ {
-            label: 'New Prompt',
-            handle: 'new',
-            description: '',
-            prompt: ''
-        } ]));
 
     function onKeydown(event) {
         if (event.code === 'Escape') {
