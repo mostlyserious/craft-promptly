@@ -6,11 +6,12 @@
 </button>
 
 <script context="module">
+    /* global TextDecoderStream */
+
     import { getContext } from 'svelte';
     import { writable, get } from 'svelte/store';
     import { keywords } from './GenerateWithKeywords';
-    import { errors, isBusy, isDev, hasAccess } from '../../store';
-    import { fetchEventSource } from '@microsoft/fetch-event-source';
+    import { errors, isBusy, hasAccess } from '../../store';
 
     export const answer = writable('');
 
@@ -26,26 +27,61 @@
                     response.set(queue.shift());
                     queueHandler();
                 }
-            }, randomNumberBetween(50, 200));
+            }, randomNumberBetween(20, 200));
         };
 
         controller = new AbortController();
 
         if (hasAccessValue.substring(0, 5) === 'gpt-4') {
-            fetchEventSource(endpoint, {
-                ...args,
-                signal: controller.signal,
-                onmessage: message => {
-                    if (message.data === '[DONE]') {
-                        return;
-                    }
+            fetch(endpoint, Object.assign(args, { 'Content-Type': 'text/event-stream' })).then(res => {
+                const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+                const interval = setInterval(() => {
+                    reader.read().then(({ value, done }) => {
+                        if (!value) {
+                            return;
+                        }
 
-                    queue.push(JSON.parse(message.data).choices.shift());
+                        value = value.split(`\n\n`).map(v => v.trim()).filter(Boolean);
 
-                    if (queue.length === 1) {
-                        queueHandler();
-                    }
-                }
+                        value.forEach(value => {
+                            if (value.substring(0, 5) === 'data:') {
+                                let message;
+
+                                value = value.replace(/^data:\s*/, '').trim();
+
+                                if (done || value === '[DONE]') {
+                                    console.info('DONE');
+
+                                    clearInterval(interval);
+
+                                    return;
+                                }
+
+                                try {
+                                    message = JSON.parse(value);
+                                } catch (error) {
+                                    clearInterval(interval);
+
+                                    console.warn(value);
+
+                                    return;
+                                }
+
+                                if (message.error) {
+                                    response.set(message);
+
+                                    return;
+                                }
+
+                                queue.push(message.choices.shift());
+
+                                if (queue.length === 1) {
+                                    queueHandler();
+                                }
+                            }
+                        });
+                    });
+                }, 100);
             });
         } else {
             fetch(endpoint, args)
@@ -110,24 +146,38 @@
                 clearTimeout(timeout);
             }
 
-            if (value.finish_reason === 'stop') {
-                unsubscribe();
-                controller.abort();
+            if (value) {
+                if (value.error) {
+                    unsubscribe();
+                    controller.abort();
 
-                $keywords = '';
-                $isBusy = false;
-
-                if (!value.message) {
-                    return;
+                    $keywords = '';
+                    $isBusy = false;
+                    $errors = [ value.error.message ];
                 }
-            }
 
-            if (value.message && value.message.content) {
-                $answer += value.message.content;
-            } else if (value.delta && value.delta.content) {
-                $answer += value.delta.content;
-            } else if (value.text) {
-                $answer += value.text;
+                if (value.finish_reason === 'stop') {
+                    unsubscribe();
+                    controller.abort();
+
+                    $keywords = '';
+                    $isBusy = false;
+
+                    if (!value.message) {
+                        return;
+                    }
+                }
+
+                $isBusy = true;
+                $errors = [];
+
+                if (value.message && value.message.content) {
+                    $answer += value.message.content;
+                } else if (value.delta && value.delta.content) {
+                    $answer += value.delta.content;
+                } else if (value.text) {
+                    $answer += value.text;
+                }
             }
 
             timeout = setTimeout(() => {
@@ -136,7 +186,7 @@
 
                 $keywords = '';
                 $isBusy = false;
-                $errors = [ 'It looks like something went wrong with the request. Please try again.' ];
+                $errors = [ 'It looks like something may have gone wrong with the request. Please try again.' ];
             }, 30 * 1000);
         });
     }

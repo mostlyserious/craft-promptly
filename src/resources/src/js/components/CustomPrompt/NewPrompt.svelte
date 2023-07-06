@@ -1,3 +1,4 @@
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <form class="wrapper"
     on:keydown={onKeydown}
     bind:this={form}>
