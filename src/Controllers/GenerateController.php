@@ -3,6 +3,7 @@
 namespace MostlySerious\Promptly\Controllers;
 
 use Craft;
+use Exception;
 use MostlySerious\Promptly\Controllers\BaseController;
 
 class GenerateController extends BaseController
@@ -11,8 +12,6 @@ class GenerateController extends BaseController
 
     public function actionIndex()
     {
-        header('Cache-Control: no-cache');
-
         $this->requireCpRequest();
 
         $prompt = Craft::$app->request->getBodyParam('prompt');
@@ -20,46 +19,32 @@ class GenerateController extends BaseController
         $keywords = Craft::$app->request->getBodyParam('keywords');
         $template = file_get_contents(dirname(__DIR__) . '/resources/system.txt');
 
-        return $this->fetch('chat', [
-            'model' => $this->default_model,
-            'messages' => array_values(array_filter([
-                [
-                    'role' => 'system',
-                    'content' => $template
-                ],
-                trim($context) ? [
-                    'role' => 'user',
-                    'content' => sprintf('We are currently working on this section of text: %s', $context)
-                ] : null,
-                [
-                    'role' => 'user',
-                    'content' => implode(PHP_EOL, array_filter([
-                        $prompt,
-                        trim($keywords)
-                            ? sprintf('Also account for the following keywords: %s', $keywords)
-                            : null
-                    ]))
-                ]
-            ]))
-        ]);
-    }
-
-    protected function fetch($endpoint, $args)
-    {
-        $passed_args = array_merge($this->default_args, $args);
-
-        if ($passed_args['model'] !== 'gpt-4') {
-            $passed_args['stream'] = false;
-
-            return $this->openai->$endpoint($passed_args);
+        try {
+            return $this->fetch('chat', [
+                'model' => $this->default_model,
+                'messages' => array_values(array_filter([
+                    [
+                        'role' => 'system',
+                        'content' => $template
+                    ],
+                    trim($context) ? [
+                        'role' => 'user',
+                        'content' => sprintf('We are currently working on this section of text: %s', $context)
+                    ] : null,
+                    [
+                        'role' => 'user',
+                        'content' => implode(PHP_EOL, array_filter([
+                            $prompt,
+                            trim($keywords)
+                                ? sprintf('Also account for the following keywords: %s', $keywords)
+                                : null
+                        ]))
+                    ]
+                ]))
+            ]);
+        } catch (Exception $e) {
+            return $this->asJson($e->getMessage());
         }
-
-        return $this->openai->$endpoint($passed_args, function ($_, $data) {
-            $this->raw($data);
-            $this->flush();
-
-            return strlen($data);
-        });
     }
 
     public function event($name, $data = null)
@@ -122,6 +107,29 @@ class GenerateController extends BaseController
         if (connection_aborted()) {
             exit();
         }
+    }
+
+    protected function fetch($endpoint, $args)
+    {
+        $passed_args = array_merge($this->default_args, $args);
+
+        if ($passed_args['model'] !== 'gpt-4') {
+            $passed_args['stream'] = false;
+
+            return $this->openai->$endpoint($passed_args);
+        }
+
+        return $this->openai->$endpoint($passed_args, function ($_, $data) {
+            if (stripos($data, 'data:') === 0) {
+                $this->raw($data);
+            } else {
+                $this->message(json_decode($data));
+            }
+
+            $this->flush();
+
+            return strlen($data);
+        });
     }
 
     protected function sendData($data)

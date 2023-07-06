@@ -33,13 +33,11 @@
         controller = new AbortController();
 
         if (hasAccessValue.substring(0, 5) === 'gpt-4') {
-            fetch(endpoint, Object.assign(args, { 'Content-Type': 'text/event-stream' })).then(response => {
-                const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
+            fetch(endpoint, Object.assign(args, { 'Content-Type': 'text/event-stream' })).then(res => {
+                const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
                 const interval = setInterval(() => {
                     reader.read().then(({ value, done }) => {
                         if (!value) {
-                            console.log('EMPTY');
-
                             return;
                         }
 
@@ -65,6 +63,12 @@
                                     clearInterval(interval);
 
                                     console.warn(value);
+
+                                    return;
+                                }
+
+                                if (message.error) {
+                                    response.set(message);
 
                                     return;
                                 }
@@ -143,6 +147,15 @@
             }
 
             if (value) {
+                if (value.error) {
+                    unsubscribe();
+                    controller.abort();
+
+                    $keywords = '';
+                    $isBusy = false;
+                    $errors = [ value.error.message ];
+                }
+
                 if (value.finish_reason === 'stop') {
                     unsubscribe();
                     controller.abort();
@@ -154,6 +167,9 @@
                         return;
                     }
                 }
+
+                $isBusy = true;
+                $errors = [];
 
                 if (value.message && value.message.content) {
                     $answer += value.message.content;
@@ -170,7 +186,7 @@
 
                 $keywords = '';
                 $isBusy = false;
-                $errors = [ 'It looks like something went wrong with the request. Please try again.' ];
+                $errors = [ 'It looks like something may have gone wrong with the request. Please try again.' ];
             }, 30 * 1000);
         });
     }

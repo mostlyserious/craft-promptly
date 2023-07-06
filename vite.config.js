@@ -11,7 +11,6 @@ export default vitepack(args, config => {
             input: 'src/resources/src/js/promptly-main.js'
         };
     } else {
-        config.build.minify = false;
         config.build.lib = {
             entry: 'src/resources/src/js/promptly-main.js',
             fileName: 'promptly',
