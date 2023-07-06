@@ -37,6 +37,12 @@
                 const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
                 const interval = setInterval(() => {
                     reader.read().then(({ value, done }) => {
+                        if (!value) {
+                            console.log('EMPTY');
+
+                            return;
+                        }
+
                         value = value.split(`\n\n`).map(v => v.trim()).filter(Boolean);
 
                         value.forEach(value => {

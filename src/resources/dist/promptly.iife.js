@@ -1453,6 +1453,10 @@ var __publicField = (obj, key, value) => {
         const interval = setInterval(
           () => {
             reader.read().then(({ value, done }) => {
+              if (!value) {
+                console.log("EMPTY");
+                return;
+              }
               value = value.split(`
 
 `).map((v) => v.trim()).filter(Boolean);
