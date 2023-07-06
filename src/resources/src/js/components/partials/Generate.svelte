@@ -6,11 +6,12 @@
 </button>
 
 <script context="module">
+    /* global TextDecoderStream */
+
     import { getContext } from 'svelte';
     import { writable, get } from 'svelte/store';
     import { keywords } from './GenerateWithKeywords';
-    import { errors, isBusy, isDev, hasAccess } from '../../store';
-    import { fetchEventSource } from '@microsoft/fetch-event-source';
+    import { errors, isBusy, hasAccess } from '../../store';
 
     export const answer = writable('');
 
@@ -26,26 +27,51 @@
                     response.set(queue.shift());
                     queueHandler();
                 }
-            }, randomNumberBetween(50, 200));
+            }, randomNumberBetween(20, 200));
         };
 
         controller = new AbortController();
 
         if (hasAccessValue.substring(0, 5) === 'gpt-4') {
-            fetchEventSource(endpoint, {
-                ...args,
-                signal: controller.signal,
-                onmessage: message => {
-                    if (message.data === '[DONE]') {
-                        return;
-                    }
+            fetch(endpoint, Object.assign(args, { 'Content-Type': 'text/event-stream' })).then(response => {
+                const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
+                const interval = setInterval(() => {
+                    reader.read().then(({ value, done }) => {
+                        value = value.split(`\n\n`).map(v => v.trim()).filter(Boolean);
 
-                    queue.push(JSON.parse(message.data).choices.shift());
+                        value.forEach(value => {
+                            if (value.substring(0, 5) === 'data:') {
+                                let message;
 
-                    if (queue.length === 1) {
-                        queueHandler();
-                    }
-                }
+                                value = value.replace(/^data:\s*/, '').trim();
+
+                                if (done || value === '[DONE]') {
+                                    console.info('DONE');
+
+                                    clearInterval(interval);
+
+                                    return;
+                                }
+
+                                try {
+                                    message = JSON.parse(value);
+                                } catch (error) {
+                                    clearInterval(interval);
+
+                                    console.warn(value);
+
+                                    return;
+                                }
+
+                                queue.push(message.choices.shift());
+
+                                if (queue.length === 1) {
+                                    queueHandler();
+                                }
+                            }
+                        });
+                    });
+                }, 100);
             });
         } else {
             fetch(endpoint, args)
@@ -110,24 +136,26 @@
                 clearTimeout(timeout);
             }
 
-            if (value.finish_reason === 'stop') {
-                unsubscribe();
-                controller.abort();
+            if (value) {
+                if (value.finish_reason === 'stop') {
+                    unsubscribe();
+                    controller.abort();
 
-                $keywords = '';
-                $isBusy = false;
+                    $keywords = '';
+                    $isBusy = false;
 
-                if (!value.message) {
-                    return;
+                    if (!value.message) {
+                        return;
+                    }
                 }
-            }
 
-            if (value.message && value.message.content) {
-                $answer += value.message.content;
-            } else if (value.delta && value.delta.content) {
-                $answer += value.delta.content;
-            } else if (value.text) {
-                $answer += value.text;
+                if (value.message && value.message.content) {
+                    $answer += value.message.content;
+                } else if (value.delta && value.delta.content) {
+                    $answer += value.delta.content;
+                } else if (value.text) {
+                    $answer += value.text;
+                }
             }
 
             timeout = setTimeout(() => {

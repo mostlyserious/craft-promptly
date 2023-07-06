@@ -7,8 +7,12 @@ use MostlySerious\Promptly\Controllers\BaseController;
 
 class GenerateController extends BaseController
 {
+    private $_headerSent;
+
     public function actionIndex()
     {
+        header('Cache-Control: no-cache');
+
         $this->requireCpRequest();
 
         $prompt = Craft::$app->request->getBodyParam('prompt');
@@ -42,8 +46,6 @@ class GenerateController extends BaseController
 
     protected function fetch($endpoint, $args)
     {
-        header('Cache-Control: no-cache');
-
         $passed_args = array_merge($this->default_args, $args);
 
         if ($passed_args['model'] !== 'gpt-4') {
@@ -52,21 +54,92 @@ class GenerateController extends BaseController
             return $this->openai->$endpoint($passed_args);
         }
 
-        header('Content-type: text/event-stream');
-
-        Craft::debug($endpoint);
-        Craft::debug($passed_args);
-
         return $this->openai->$endpoint($passed_args, function ($_, $data) {
-            Craft::debug($_);
-            Craft::debug($data);
-
-            echo $data;
-
-            ob_flush();
-            flush();
+            $this->raw($data);
+            $this->flush();
 
             return strlen($data);
         });
+    }
+
+    public function event($name, $data = null)
+    {
+        $this->sendHeader();
+
+        echo "event: {$name}\n";
+
+        if ($data !== null) {
+            $this->sendData($data);
+        }
+
+        echo "\n";
+    }
+
+    public function message($data)
+    {
+        $this->sendHeader();
+        $this->sendData($data);
+
+        echo "\n";
+    }
+
+    public function raw($data)
+    {
+        $this->sendHeader();
+
+        echo $data;
+        echo "\n";
+    }
+
+    public function id($id, $data = '')
+    {
+        $this->sendHeader();
+
+        echo "id: {$id}\n";
+
+        $this->sendData($data);
+
+        echo "\n";
+    }
+
+    public function retry($time)
+    {
+        $this->sendHeader();
+
+        echo "retry: {$time}\n\n";
+    }
+
+    public function flush()
+    {
+        $this->sendHeader();
+
+        while (ob_get_level() > 0) {
+            ob_end_flush();
+        }
+
+        flush();
+
+        if (connection_aborted()) {
+            exit();
+        }
+    }
+
+    protected function sendData($data)
+    {
+        $messages = explode("\n", json_encode($data));
+
+        foreach ($messages as $message) {
+            echo "data: {$message}\n";
+        }
+    }
+
+    private function sendHeader()
+    {
+        if (!$this->_headerSent && !headers_sent()) {
+            $this->_headerSent = true;
+
+            header('Content-Type: text/event-stream');
+            header('Cache-Control: no-cache');
+        }
     }
 }

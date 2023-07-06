@@ -8,7 +8,7 @@
             label: 'Correct Spelling & Grammar',
             handle: 'spellingGrammar',
             description: 'Ensure clean writing by checking and correcting spelling and grammar.',
-            prompt: 'Please correct all spelling, punctuation, capitalization, and grammer mistakes.',
+            prompt: 'Return this content with all spelling, punctuation, capitalization, and grammer mistakes corrected.',
             heading: 'Ensure clean writing by checking and correcting spelling and grammar.',
             options: []
         },
