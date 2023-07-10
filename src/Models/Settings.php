@@ -17,14 +17,19 @@ use craft\behaviors\EnvAttributeParserBehavior;
 class Settings extends Model
 {
     /**
-     * @var string|null The OpenAI API key
+     * @var string The OpenAI API key
      */
-    public $openAiKey;
+    public $openAiKey = '';
 
     /**
-     * @var string|null The GPT model to be used
+     * @var string The GPT model to be used
      */
-    public $gptModel;
+    public $gptModel = '';
+
+    /**
+     * @var string The Organization ID
+     */
+    public $organizationId = '';
 
     /**
      * Gets the GPT model.
@@ -47,6 +52,16 @@ class Settings extends Model
     }
 
     /**
+     * Gets the parsed Organization ID from the environment.
+     *
+     * @return string
+     */
+    public function getOrganizationId(): string
+    {
+        return App::parseEnv($this->organizationId);
+    }
+
+    /**
      * Defines the behaviors for the Settings model.
      *
      * @return array
@@ -56,7 +71,7 @@ class Settings extends Model
         return [
             'parser' => [
                 'class' => EnvAttributeParserBehavior::class,
-                'attributes' => [ 'openAiKey' ],
+                'attributes' => [ 'openAiKey', 'organizationId' ],
             ],
         ];
     }
@@ -70,7 +85,7 @@ class Settings extends Model
     {
         return [
             [ [ 'openAiKey', 'gptModel' ], 'required' ],
-            [ [ 'openAiKey', 'gptModel' ], StringValidator::class ],
+            [ [ 'openAiKey', 'gptModel', 'organizationId' ], StringValidator::class ],
             [ [ 'gptModel' ], RangeValidator::class, 'range' => [ 'gpt-3.5-turbo', 'gpt-4' ] ]
         ];
     }

@@ -29,7 +29,7 @@
 
 <script>
     import { answer } from './Generate';
-    import { customPrompt, categories } from '../Promptly';
+    import { customPrompt, categories } from '../FieldModal';
     import { errors, active, category, screen } from '../../store';
 
     export let label;

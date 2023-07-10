@@ -17,6 +17,18 @@
         suggestEnvVars: true
     }) }}
 
+    {{ forms.autosuggestField({
+        label: 'Organization ID',
+        instructions: 'Optional [Organization ID](https://platform.openai.com/account/org-settings) used for API requests.',
+        id: 'organizationId',
+        name: 'organizationId',
+        value: settings.organizationId,
+        errors: settings.getErrors('organizationId'),
+        disabled: config.organizationId|default('') is not empty,
+        warning: macros.configWarning('organizationId', 'promptly'),
+        suggestEnvVars: true
+    }) }}
+
     {{ forms.selectField({
         label: 'GPT Model',
         instructions: '',

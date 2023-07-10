@@ -4,13 +4,19 @@ namespace MostlySerious\Promptly;
 
 use Craft;
 use yii\base\Event;
+use craft\web\View;
 use craft\base\Model;
+use craft\elements\Asset;
 use craft\services\Plugins;
 use craft\helpers\UrlHelper;
 use craft\events\PluginEvent;
 use craft\base\Plugin as BasePlugin;
 use MostlySerious\Promptly\Models\Settings;
 use MostlySerious\Promptly\Migrations\Install;
+
+use craft\events\RegisterElementHtmlAttributesEvent;
+use craft\events\RegisterElementTableAttributesEvent;
+use craft\events\SetElementTableAttributeHtmlEvent;
 
 /**
  * Class Plugin

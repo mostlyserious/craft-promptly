@@ -154,6 +154,8 @@
                     $keywords = '';
                     $isBusy = false;
                     $errors = [ value.error.message ];
+
+                    return;
                 }
 
                 if (value.finish_reason === 'stop') {

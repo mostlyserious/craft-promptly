@@ -116,7 +116,7 @@
     }
 
     .promptly-answer {
-        @apply px-6 py-3 text-white bg-[#22c55f] rounded;
+        @apply px-6 py-3 text-white bg-brand-green rounded;
 
         & :global(p) {
             @apply m-0;

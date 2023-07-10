@@ -125,8 +125,4 @@
     .field {
         @apply m-0;
     }
-
-    .required {
-        @apply inline-block m-0 -translate-y-1 -translate-x-1.5;
-    }
 </style>
