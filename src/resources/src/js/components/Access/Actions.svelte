@@ -25,7 +25,7 @@
             redirect: 'follow'
         };
 
-        fetch('/admin/actions/promptly/access', args)
+        fetch(Craft.getActionUrl('promptly/access'), args)
             .then(res => res.json())
             .then(res => {
                 $isBusy = false;

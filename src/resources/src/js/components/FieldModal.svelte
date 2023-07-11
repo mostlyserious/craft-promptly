@@ -23,6 +23,8 @@
 </Modal>
 
 <script context="module">
+    /* global Craft */
+
     import Modal from './Modal';
     import Edit from './Edit/Edit';
     import { setContext } from 'svelte';
@@ -54,7 +56,7 @@
         }
     ];
 
-    fetch('/admin/actions/promptly/prompts')
+    fetch(Craft.getActionUrl('promptly/prompts'))
         .then(res => res.json())
         .then(res => customPrompts.set(res.concat([ {
             label: 'New Prompt',

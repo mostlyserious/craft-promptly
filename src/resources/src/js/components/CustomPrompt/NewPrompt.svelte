@@ -93,7 +93,7 @@
         };
 
         $isBusy = true;
-        fetch('/admin/actions/promptly/prompts', args)
+        fetch(Craft.getActionUrl('promptly/prompts'), args)
             .then(res => res.json())
             .then(res => {
                 $isBusy = false;

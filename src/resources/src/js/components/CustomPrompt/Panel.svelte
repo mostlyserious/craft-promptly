@@ -67,7 +67,7 @@
             redirect: 'follow'
         };
 
-        fetch('/admin/actions/promptly/prompts/delete', args)
+        fetch(Craft.getActionUrl('promptly/prompts/delete'), args)
             .then(res => res.json())
             .then(res => {
                 confirmDeletion = false;

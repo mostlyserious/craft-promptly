@@ -141,7 +141,7 @@
         $answer = '';
         $isBusy = true;
 
-        const unsubscribe = stream('/admin/actions/promptly/generate', args).subscribe(value => {
+        const unsubscribe = stream(Craft.getActionUrl('promptly/generate'), args).subscribe(value => {
             if (timeout) {
                 clearTimeout(timeout);
             }

@@ -5,6 +5,8 @@
 {/if}
 
 <script>
+    /* global Craft */
+
     import Panel from './Panel';
     import Actions from './Actions';
     import Base from '../partials/Base';
@@ -14,7 +16,7 @@
 
     if (!$hasAccess) {
         $isBusy = true;
-        fetch('/admin/actions/promptly/access')
+        fetch(Craft.getActionUrl('promptly/access'))
             .then(res => res.json())
             .then(res => {
                 $isBusy = false;

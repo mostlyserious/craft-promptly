@@ -101,7 +101,8 @@
         response = '';
         $isBusy = true;
 
-        fetch('/admin/actions/promptly/image', args)
+
+        fetch(Craft.getActionUrl('promptly/image'), args)
             .then(res => res.json())
             .then(res => {
                 response = res;
@@ -128,11 +129,11 @@
         $errors = [];
         $isBusy = true;
 
-        fetch('/admin/actions/promptly/image/save', args)
+        fetch(Craft.getActionUrl('promptly/image/save'), args)
             .then(res => res.json())
             .then(res => {
                 $isBusy = false;
-                console.log(res);
+                window.location = `/${Craft.cpTrigger}/assets/edit/${res.id}-${res.title.toLowerCase()}`;
             });
     }
 </script>
