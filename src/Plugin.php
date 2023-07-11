@@ -63,7 +63,7 @@ class Plugin extends BasePlugin
         Craft::$app->onInit(function() {
             $settings = $this->getSettings();
 
-            if ($settings->openAiKey) {
+            if ($settings->openAiKey && Craft::$app->user->identity) {
                 // This can't be right but these tables are just not getting reliably installed.
                 // Need to dig into this later.
                 Install::ensure();
