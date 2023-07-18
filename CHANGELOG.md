@@ -13,9 +13,13 @@
 - Slightly adjusted Correct Spelling & Grammar prompt
 - Remove @microsoft/fetch-event-source dependency
 
-## 1.1.0 - 2023-00-00
+## 1.1.0 - 2023-07-18
 ### Fixed
 - Instance where returned OpenAI errors were not being displayed
+- Redirecting users to action endpoint when logging into dashboard
 
 ### Added
 - Optional Organization ID config for users who belong to multiple organizations
+
+### Changed
+- Front and back end refactoring and tighter integration with Craft utilities
