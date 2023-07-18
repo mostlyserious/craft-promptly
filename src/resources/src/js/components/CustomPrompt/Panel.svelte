@@ -67,7 +67,7 @@
             redirect: 'follow'
         };
 
-        fetch('/admin/actions/promptly/prompts/delete', args)
+        fetch(Craft.getActionUrl('promptly/prompts/delete'), args)
             .then(res => res.json())
             .then(res => {
                 confirmDeletion = false;
@@ -116,7 +116,7 @@
     }
 
     .promptly-answer {
-        @apply px-6 py-3 text-white bg-[#22c55f] rounded;
+        @apply px-6 py-3 text-white bg-brand-green rounded;
 
         & :global(p) {
             @apply m-0;

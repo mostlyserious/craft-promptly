@@ -7,7 +7,6 @@ const { textStroke } = require('@mostlyserious/tailwindcss-util');
 const { stateVariant } = require('@mostlyserious/tailwindcss-util');
 
 module.exports = {
-    // prefix: 'ms-',
     content: [
         'src/**/*.{js,php,twig,svelte}'
     ].flat(),
@@ -40,7 +39,8 @@ module.exports = {
         extend: {
             colors: {
                 brand: {
-
+                    blue: '#0e85ff',
+                    green: '#22c55f'
                 }
             },
             fontFamily: {

@@ -1,62 +1,41 @@
-<svelte:window on:keydown={onKeydown} />
-
-{#if $isActive === redactor.uuid}
-    <div class="modal-bg garnish-js-aria"
-        aria-hidden="true"
-        on:click={() => $isActive = false}
-        transition:fade={{ duration: 200 }}>
-    </div>
-    <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
-    <div class="modal elementselectormodal"
-        aria-labelledby="modal-promptly-heading"
-        aria-modal="true"
-        role="dialog"
-        in:fade={{ duration: 200, delay: 100 }}
-        out:fade={{ duration: 200 }}
-        on:click={() => dropdownActive = false}>
-        <h1 id="modal-promptly-heading" class="visually-hidden">
-            Promptly
-        </h1>
-        <div class="body has-sidebar">
-            <div class="content"
-                class:has-sidebar={$screen.isLg}>
-                <div class="sidebar"
-                    class:no-access={!$hasAccess}>
-                    <div class="sidebar-inner">
-                        <SidebarItem action={customPrompt}>
-                            {customPrompt.label}
-                        </SidebarItem>
-                        <hr>
-                        {#each categories as action (action.handle)}
-                            <SidebarItem {action}>
-                                {action.label}
-                            </SidebarItem>
-                        {/each}
-                    </div>
-                </div>
-                {#if $category}
-                    <Access>
-                        <svelte:component this={$category.component} label={$category.label} />
-                    </Access>
-                {/if}
-            </div>
+<Modal isOpen={$isActive === redactor.uuid}>
+    <div class="sidebar" slot="sidebar">
+        <div class="sidebar-inner">
+            <SidebarItem action={customPrompt}>
+                {customPrompt.label}
+            </SidebarItem>
+            <hr>
+            {#each categories as action (action.handle)}
+                <SidebarItem {action}>
+                    {action.label}
+                </SidebarItem>
+            {/each}
         </div>
-        <Footer bind:dropdownActive />
     </div>
-{/if}
+
+    {#if $category}
+        <Access>
+            <svelte:component this={$category.component} label={$category.label} />
+        </Access>
+    {/if}
+
+    <Footer slot="footer" bind:dropdownActive />
+</Modal>
 
 <script context="module">
+    /* global Craft */
+
+    import Modal from './Modal';
     import Edit from './Edit/Edit';
     import { setContext } from 'svelte';
     import Access from './Access/Access';
     import Footer from './partials/Footer';
-    import { fade } from 'svelte/transition';
     import Brainstorm from './Brainstorm/Brainstorm';
     import SidebarItem from './partials/SidebarItem';
     import CustomPrompt from './CustomPrompt/CustomPrompt';
     import { answer, controller } from './partials/Generate';
     import { actions as customPrompts } from './CustomPrompt/Actions';
-    import { category, isActive, isBusy, hasContent, hasAccess, screen } from '../store';
+    import { category, isActive, isBusy, hasContent } from '../store';
 
     export const customPrompt = {
         label: '⚡ Custom Prompt',
@@ -77,7 +56,7 @@
         }
     ];
 
-    fetch('/admin/actions/promptly/prompts')
+    fetch(Craft.getActionUrl('promptly/prompts'))
         .then(res => res.json())
         .then(res => customPrompts.set(res.concat([ {
             label: 'New Prompt',
@@ -109,12 +88,6 @@
 
     $: if ($isActive === redactor.uuid) {
         $hasContent = !!redactor.cleaner.getFlatText(preview).trim();
-    }
-
-    function onKeydown(event) {
-        if (event.code === 'Escape') {
-            $isActive = false;
-        }
     }
 </script>
 

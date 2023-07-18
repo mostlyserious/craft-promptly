@@ -20,7 +20,7 @@
         }
 
         &:not(.is-active):hover {
-            @apply bg-[#0e85ff] text-white;
+            @apply bg-brand-blue text-white;
         }
     }
 </style>

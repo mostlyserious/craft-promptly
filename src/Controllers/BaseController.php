@@ -12,17 +12,14 @@ abstract class BaseController extends Controller
 
     public $default_model;
 
-    public $default_args = [
-        'stream' => true,
-        'temperature' => 1,
-        'frequency_penalty' => 0,
-        'presence_penalty' => 0,
-    ];
-
     public function init(): void
     {
         $this->default_model = Plugin::$plugin->settings->getGptModel();
         $this->openai = new OpenAi(Plugin::$plugin->settings->getOpenAiKey());
+
+        if ($org_id = Plugin::$plugin->settings->getOrganizationId()) {
+            $this->openai->setORG($org_id);
+        }
 
         parent::init();
     }

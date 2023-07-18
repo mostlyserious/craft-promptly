@@ -93,7 +93,7 @@
         };
 
         $isBusy = true;
-        fetch('/admin/actions/promptly/prompts', args)
+        fetch(Craft.getActionUrl('promptly/prompts'), args)
             .then(res => res.json())
             .then(res => {
                 $isBusy = false;
@@ -124,9 +124,5 @@
 
     .field {
         @apply m-0;
-    }
-
-    .required {
-        @apply inline-block m-0 -translate-y-1 -translate-x-1.5;
     }
 </style>
