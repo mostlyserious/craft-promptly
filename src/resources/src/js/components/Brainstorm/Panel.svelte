@@ -23,9 +23,12 @@
     {/if}
 
     <Preview>
-        {#if !$active.requiresContex}
-            <p>Block content is empty. To guide topic generation, please input relevant keywords.</p>
-        {/if}
+        <p class="promptly-panel">
+            Block content is empty.
+            {#if $active.requiresContex}
+                Please provide content to submit first.
+            {/if}
+        </p>
     </Preview>
 {/if}
 

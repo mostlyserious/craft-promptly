@@ -102,6 +102,10 @@
         @apply inline-block m-0 -translate-y-1 -translate-x-1.5;
     }
 
+    .modal :global(.promptly-panel) {
+        @apply px-4 py-2 border bg-slate-100 rounded;
+    }
+
     .no-access {
         @apply opacity-50 pointer-events-none;
     }
