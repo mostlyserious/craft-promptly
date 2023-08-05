@@ -11,7 +11,9 @@
     {/if}
 
     <Preview>
-        <p>Block content is empty. Please provide content to edit first.</p>
+        <p class="promptly-panel">
+            Block content is empty. Please provide content to edit first.
+        </p>
     </Preview>
 {/if}
 
