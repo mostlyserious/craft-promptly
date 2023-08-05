@@ -3,15 +3,14 @@
 </div>
 
 <script>
-    import { isBusy } from '../../store';
-    import { getContext } from 'svelte';
+    import { isBusy, redactor } from '../../store';
 
     export let content;
 
-    const redactor = getContext('redactor');
-
     function format(string) {
-        return redactor.cleaner.paragraphize(string);
+        return $redactor
+            ? $redactor.cleaner.paragraphize(string)
+            : string;
     }
 </script>
 

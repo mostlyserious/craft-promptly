@@ -1,40 +1,37 @@
 {#if types.includes(el.dataset.type)}
-    <button type="button" class="btn">
-        {@html markup(icon, {
-            class: 'icon'
-        })}
+    <button type="button" class="btn" on:click={onClick}>
+        {@html markup(icon, { class: 'icon' })}
         <span class="tooltip">Promptly</span>
     </button>
 {/if}
 
 <script context="module">
+    import * as store from '../store';
+    import FieldModal from './FieldModal';
+    import markup from '../modules/markup';
     import { writable } from 'svelte/store';
+    import icon from '../../img/icon.svg?raw';
 
     const fields = writable({});
+
+    new FieldModal({
+        store, target: document.body
+    });
 </script>
 
 <script>
-    import markup from '../modules/markup';
-    import icon from '../../img/icon.svg?raw';
+    /* global Redactor */
 
     export let el;
     // export let attribute;
 
+    const observer = new MutationObserver(onMutation);
     const types = [
-        'craft\\fields\\PlainText',
+        // 'craft\\fields\\PlainText',
         'craft\\redactor\\Field'
     ];
 
-    const observer = new MutationObserver((mutations => {
-        mutations.forEach(mutation => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'data-redactor-uuid') {
-                console.log(
-                    mutation.target.dataset.redactorUuid,
-                    mutation.target.closest('.field')
-                );
-            }
-        });
-    }));
+    let redactor;
 
     if (types.includes(el.dataset.type)) {
         $fields = Object.assign($fields, { [el.dataset.layoutElement]: el });
@@ -48,6 +45,19 @@
 
     el.addEventListener('mouseenter', () => el.classList.add('hover'));
     el.addEventListener('mouseleave', () => el.classList.remove('hover'));
+
+    function onClick() {
+        store.redactor.set(redactor);
+        store.isActive.set(true);
+    }
+
+    function onMutation(mutations) {
+        mutations.forEach(mutation => {
+            if (mutation.attributeName === 'data-redactor-uuid') {
+                redactor = Redactor(mutation.target); // eslint-disable-line new-cap
+            }
+        });
+    }
 </script>
 
 <style lang="postcss">

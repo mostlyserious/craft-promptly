@@ -60,20 +60,17 @@
 </div>
 
 <script context="module">
-    import { getContext } from 'svelte';
     import snarkdown from '@bpmn-io/snarkdown';
-    import { isActive, isBusy, insertion } from '../../store';
+    import { redactor, isActive, isBusy, insertion } from '../../store';
 </script>
 
 <script>
     export let dropdownActive;
 
-    const redactor = getContext('redactor');
-
     function prepare(content) {
-        content = redactor.cleaner.paragraphize(content);
+        content = $redactor.cleaner.paragraphize(content);
         content = snarkdown(content);
-        content = redactor.cleaner.input(content);
+        content = $redactor.cleaner.input(content);
 
         return content;
     }
@@ -83,7 +80,7 @@
             return;
         }
 
-        redactor.insertion.insertHtml(prepare($insertion));
+        $redactor.insertion.insertHtml(prepare($insertion));
         $isActive = false;
     }
 
@@ -92,8 +89,8 @@
             return;
         }
 
-        redactor.insertion.set([
-            redactor.api('source.getCode'),
+        $redactor.insertion.set([
+            $redactor.api('source.getCode'),
             prepare($insertion)
         ].join(`\n`));
         $isActive = false;
@@ -104,9 +101,9 @@
             return;
         }
 
-        redactor.insertion.set([
+        $redactor.insertion.set([
             prepare($insertion),
-            redactor.api('source.getCode')
+            $redactor.api('source.getCode')
         ].join(`\n`));
         $isActive = false;
     }
@@ -116,7 +113,7 @@
             return;
         }
 
-        redactor.insertion.set(prepare($insertion));
+        $redactor.insertion.set(prepare($insertion));
         $isActive = false;
     }
 

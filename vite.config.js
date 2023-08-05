@@ -8,11 +8,11 @@ const args = {
 export default vitepack(args, config => {
     if (process.env.VITEPACK_COMMAND === 'dev') {
         config.build.rollupOptions = {
-            input: 'src/resources/src/js/promptly-main.js'
+            input: 'src/resources/src/js/promptly.js'
         };
     } else {
         config.build.lib = {
-            entry: 'src/resources/src/js/promptly-main.js',
+            entry: 'src/resources/src/js/promptly.js',
             fileName: 'promptly',
             name: 'promptly',
             formats: [ 'iife' ]

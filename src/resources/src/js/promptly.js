@@ -1,8 +1,4 @@
-/* global Redactor */
-
 import * as store from './store';
-import redactorPlugin from './redactor';
-import FieldModal from './components/FieldModal';
 import FieldButton from './components/FieldButton';
 
 import.meta.glob('../{img,font,media}/**/*');
@@ -23,8 +19,4 @@ import.meta.glob('../{img,font,media}/**/*');
             props: { el }
         });
     });
-
-    // if (typeof Redactor !== 'undefined') {
-    //     redactorPlugin({ FieldModal, isActive: store.isActive });
-    // }
 });

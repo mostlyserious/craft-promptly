@@ -8,10 +8,9 @@
 <script context="module">
     /* global TextDecoderStream */
 
-    import { getContext } from 'svelte';
     import { writable, get } from 'svelte/store';
     import { keywords } from './GenerateWithKeywords';
-    import { errors, isBusy, hasAccess } from '../../store';
+    import { redactor, errors, isBusy, hasAccess } from '../../store';
 
     export const answer = writable('');
 
@@ -111,8 +110,9 @@
     export let prompt = null;
     export let disabled;
 
-    const redactor = getContext('redactor');
-    const preview = redactor.api('source.getCode');
+    const preview = $redactor
+        ? $redactor.api('source.getCode')
+        : '';
 
     let timeout;
 

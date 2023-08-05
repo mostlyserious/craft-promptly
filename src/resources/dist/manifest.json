@@ -1,7 +1,7 @@
 {
-  "src/resources/src/js/promptly-main.js": {
+  "src/resources/src/js/promptly.js": {
     "file": "promptly.iife.js",
-    "src": "src/resources/src/js/promptly-main.js",
+    "src": "src/resources/src/js/promptly.js",
     "isEntry": true
   }
 }

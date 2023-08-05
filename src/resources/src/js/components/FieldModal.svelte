@@ -1,4 +1,4 @@
-<Modal isOpen={$isActive === redactor.uuid}>
+<Modal isOpen={$isActive}>
     <div class="sidebar" slot="sidebar">
         <div class="sidebar-inner">
             <SidebarItem action={customPrompt}>
@@ -19,7 +19,9 @@
         </Access>
     {/if}
 
-    <Footer slot="footer" bind:dropdownActive />
+    {#if $redactor}
+        <Footer slot="footer" bind:dropdownActive />
+    {/if}
 </Modal>
 
 <script context="module">
@@ -27,7 +29,6 @@
 
     import Modal from './Modal';
     import Edit from './Edit/Edit';
-    import { setContext } from 'svelte';
     import Access from './Access/Access';
     import Footer from './partials/Footer';
     import Brainstorm from './Brainstorm/Brainstorm';
@@ -35,7 +36,7 @@
     import CustomPrompt from './CustomPrompt/CustomPrompt';
     import { answer, controller } from './partials/Generate';
     import { actions as customPrompts } from './CustomPrompt/Actions';
-    import { category, isActive, isBusy, hasContent } from '../store';
+    import { redactor, category, isActive, isBusy, hasContent } from '../store';
 
     export const customPrompt = {
         label: '⚡ Custom Prompt',
@@ -67,13 +68,11 @@
 </script>
 
 <script>
-    export let redactor;
-
-    const preview = redactor.source.getCode();
-
     let dropdownActive = false;
 
-    setContext('redactor', redactor);
+    $: preview = $redactor
+        ? $redactor.source.getCode()
+        : '';
 
     $: if (!$isActive) {
         controller.abort();
@@ -86,8 +85,8 @@
         $category = categories[0];
     }
 
-    $: if ($isActive === redactor.uuid) {
-        $hasContent = !!redactor.cleaner.getFlatText(preview).trim();
+    $: if ($redactor && $redactor.uuid) {
+        $hasContent = !!$redactor.cleaner.getFlatText(preview).trim();
     }
 </script>
 
