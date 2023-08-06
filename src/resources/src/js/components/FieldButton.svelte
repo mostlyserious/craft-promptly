@@ -1,4 +1,4 @@
-{#if types.includes(el.dataset.type)}
+{#if types.includes(field.type)}
     <button type="button" class="btn" on:click={onClick}>
         {@html markup(icon, { class: 'icon' })}
         <span class="tooltip">Promptly</span>
@@ -6,13 +6,14 @@
 {/if}
 
 <script context="module">
+    import Field from './Field';
     import * as store from '../store';
     import FieldModal from './FieldModal';
     import markup from '../modules/markup';
-    import { writable } from 'svelte/store';
+    // import { writable } from 'svelte/store';
     import icon from '../../img/icon.svg?raw';
 
-    const fields = writable({});
+    // const fields = writable({});
 
     new FieldModal({
         store, target: document.body
@@ -20,43 +21,25 @@
 </script>
 
 <script>
-    /* global Redactor */
-
     export let el;
-    // export let attribute;
 
-    const observer = new MutationObserver(onMutation);
     const types = [
-        // 'craft\\fields\\PlainText',
+        'craft\\fields\\PlainText',
         'craft\\redactor\\Field'
     ];
 
-    let redactor;
+    const field = new Field(el);
 
-    if (types.includes(el.dataset.type)) {
-        $fields = Object.assign($fields, { [el.dataset.layoutElement]: el });
-    }
-
-    if (el.dataset.type === 'craft\\redactor\\Field') {
-        const textarea = el.querySelector('textarea');
-
-        observer.observe(textarea, { attributes: true });
-    }
+    // if (types.includes(el.dataset.type)) {
+    //     $fields = Object.assign($fields, { [el.dataset.layoutElement]: el });
+    // }
 
     el.addEventListener('mouseenter', () => el.classList.add('hover'));
     el.addEventListener('mouseleave', () => el.classList.remove('hover'));
 
     function onClick() {
-        store.redactor.set(redactor);
+        store.field.set(field);
         store.isActive.set(true);
-    }
-
-    function onMutation(mutations) {
-        mutations.forEach(mutation => {
-            if (mutation.attributeName === 'data-redactor-uuid') {
-                redactor = Redactor(mutation.target); // eslint-disable-line new-cap
-            }
-        });
     }
 </script>
 

@@ -13,7 +13,7 @@
                 class="btn disabled submit"
                 aria-disabled={$isBusy || !$insertion}
                 class:disabled={$isBusy || !$insertion}
-                on:click={insert}>
+                on:click={$redactor ? insert : replace}>
                 <div class="label">Insert Results</div>
                 <div class="spinner spinner-absolute"></div>
             </button>
@@ -43,12 +43,14 @@
                     Append Results
                 </button>
             </li>
-            <li>
-                <button type="button"
-                    on:click|stopPropagation={replace}>
-                    Replace with Results
-                </button>
-            </li>
+            {#if $redactor}
+                <li>
+                    <button type="button"
+                        on:click|stopPropagation={replace}>
+                        Replace with Results
+                    </button>
+                </li>
+            {/if}
             <li>
                 <button type="button"
                     on:click|stopPropagation={clipboard}>
@@ -61,16 +63,22 @@
 
 <script context="module">
     import snarkdown from '@bpmn-io/snarkdown';
-    import { redactor, isActive, isBusy, insertion } from '../../store';
+    import { redactor, field, isActive, isBusy, insertion } from '../../store';
 </script>
 
 <script>
     export let dropdownActive;
 
+    let input;
+
+    $field;
+
     function prepare(content) {
-        content = $redactor.cleaner.paragraphize(content);
-        content = snarkdown(content);
-        content = $redactor.cleaner.input(content);
+        if ($redactor) {
+            content = $redactor.cleaner.paragraphize(content);
+            content = snarkdown(content);
+            content = $redactor.cleaner.input(content);
+        }
 
         return content;
     }
@@ -80,7 +88,12 @@
             return;
         }
 
-        $redactor.insertion.insertHtml(prepare($insertion));
+        if ($redactor) {
+            $redactor.insertion.insertHtml(prepare($insertion));
+        } else if (input) {
+            input.value = prepare($insertion);
+        }
+
         $isActive = false;
     }
 
@@ -89,10 +102,18 @@
             return;
         }
 
-        $redactor.insertion.set([
-            $redactor.api('source.getCode'),
-            prepare($insertion)
-        ].join(`\n`));
+        if ($redactor) {
+            $redactor.insertion.set([
+                $redactor.api('source.getCode'),
+                prepare($insertion)
+            ].join(`\n`));
+        } else if (input) {
+            input.value = [
+                input.value,
+                prepare($insertion)
+            ].join(`\n`);
+        }
+
         $isActive = false;
     }
 
@@ -101,10 +122,18 @@
             return;
         }
 
-        $redactor.insertion.set([
-            prepare($insertion),
-            $redactor.api('source.getCode')
-        ].join(`\n`));
+        if ($redactor) {
+            $redactor.insertion.set([
+                prepare($insertion),
+                $redactor.api('source.getCode')
+            ].join(`\n`));
+        } else if (input) {
+            input.value = [
+                prepare($insertion),
+                input.value
+            ].join(`\n`);
+        }
+
         $isActive = false;
     }
 
@@ -113,7 +142,12 @@
             return;
         }
 
-        $redactor.insertion.set(prepare($insertion));
+        if ($redactor) {
+            $redactor.insertion.set(prepare($insertion));
+        } else if (input) {
+            input.value = prepare($insertion);
+        }
+
         $isActive = false;
     }
 

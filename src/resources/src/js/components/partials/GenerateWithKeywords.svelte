@@ -1,6 +1,6 @@
 <input type="text"
     class="text fullwidth"
-    placeholder="Additional Keywords (optional)"
+    placeholder={$hasContent ? 'Additional Keywords (optional)' : 'Keywords'}
     bind:value={$keywords}>
 <Generate {active} {prompt} {disabled}>
     <slot></slot>
@@ -8,6 +8,7 @@
 
 <script context="module">
     import { writable } from 'svelte/store';
+    import { hasContent } from '../../store';
 
     export const keywords = writable('');
 </script>

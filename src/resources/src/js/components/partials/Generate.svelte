@@ -10,7 +10,7 @@
 
     import { writable, get } from 'svelte/store';
     import { keywords } from './GenerateWithKeywords';
-    import { redactor, errors, isBusy, hasAccess } from '../../store';
+    import { errors, isBusy, hasAccess } from '../../store';
 
     export const answer = writable('');
 
@@ -105,14 +105,10 @@
 <script>
     /* global Craft */
 
-    import { active } from '../../store';
+    import { active, preview } from '../../store';
 
     export let prompt = null;
     export let disabled;
-
-    const preview = $redactor
-        ? $redactor.api('source.getCode')
-        : '';
 
     let timeout;
 
@@ -120,7 +116,7 @@
         const data = {
             [Craft.csrfTokenName]: Craft.csrfTokenValue,
             prompt: prompt ? prompt : $active.prompt,
-            context: preview,
+            context: $preview,
             keywords: $keywords
         };
 

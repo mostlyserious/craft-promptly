@@ -19,9 +19,7 @@
         </Access>
     {/if}
 
-    {#if $redactor}
-        <Footer slot="footer" bind:dropdownActive />
-    {/if}
+    <Footer slot="footer" bind:dropdownActive />
 </Modal>
 
 <script context="module">
@@ -36,7 +34,7 @@
     import CustomPrompt from './CustomPrompt/CustomPrompt';
     import { answer, controller } from './partials/Generate';
     import { actions as customPrompts } from './CustomPrompt/Actions';
-    import { redactor, category, isActive, isBusy, hasContent } from '../store';
+    import { field, preview, category, isActive, isBusy, hasContent } from '../store';
 
     export const customPrompt = {
         label: '⚡ Custom Prompt',
@@ -70,8 +68,8 @@
 <script>
     let dropdownActive = false;
 
-    $: preview = $redactor
-        ? $redactor.source.getCode()
+    $: $preview = $field
+        ? $field.value()
         : '';
 
     $: if (!$isActive) {
@@ -81,13 +79,17 @@
         dropdownActive = false;
     }
 
-    $: if (!$category) {
-        $category = categories[0];
+    $: {
+        if ($isActive && !$category) {
+            $category = $customPrompts.length > 1
+                ? customPrompt
+                : categories[0];
+        }
     }
 
-    $: if ($redactor && $redactor.uuid) {
-        $hasContent = !!$redactor.cleaner.getFlatText(preview).trim();
-    }
+    $: $hasContent = $field
+        ? !$field.isEmpty()
+        : null;
 </script>
 
 <style lang="postcss">

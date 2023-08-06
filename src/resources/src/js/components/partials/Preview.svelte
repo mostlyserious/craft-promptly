@@ -6,7 +6,7 @@
             style:height={clientHeight > 100 ? (expanded ? `${clientHeight}px` : '100px') : 'auto'}>
             <div class="preview-content"
                 bind:clientHeight>
-                {@html preview}
+                {@html $preview}
             </div>
         </div>
     </div>
@@ -23,14 +23,11 @@
 {/if}
 
 <script>
-    import { redactor } from '../../store';
+    import { redactor, preview } from '../../store';
 
-    const preview = $redactor
-        ? $redactor.source.getCode()
-        : '';
     const plainText = $redactor
-        ? $redactor.cleaner.getFlatText(preview).trim()
-        : preview;
+        ? $redactor.cleaner.getFlatText($preview).trim()
+        : $preview;
 
     let expanded = false,
         clientHeight;
@@ -58,7 +55,8 @@
         & .preview-content {
             @apply prose prose-sm w-full max-w-full leading-5 min-h-0 h-max text-slate-500;
 
-            & :global(p:last-of-type) {
+            & :global(p:last-of-type),
+            & :global(h2:last-of-type) {
                 @apply mb-0;
             }
         }

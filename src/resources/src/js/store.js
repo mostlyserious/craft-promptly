@@ -2,6 +2,8 @@ import throttle from './modules/throttle';
 import { writable, readable } from 'svelte/store';
 
 export const redactor = writable(null);
+export const field = writable(null);
+export const preview = writable('');
 export const errors = writable([]);
 export const isBusy = writable(false);
 export const isActive = writable(false);
