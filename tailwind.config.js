@@ -40,7 +40,11 @@ module.exports = {
             colors: {
                 brand: {
                     blue: '#0e85ff',
-                    green: '#22c55f'
+                    green: '#22c55f',
+                    purple: {
+                        DEFAULT: '#a635cf',
+                        dark: '#661fe0'
+                    }
                 }
             },
             fontFamily: {

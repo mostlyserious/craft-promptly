@@ -13,7 +13,7 @@
                 class="btn disabled submit"
                 aria-disabled={$isBusy || !$insertion}
                 class:disabled={$isBusy || !$insertion}
-                on:click={$redactor ? insert : replace}>
+                on:click={sendToField($field.redactor ? 'insert' : 'replace')}>
                 <div class="label">Insert Results</div>
                 <div class="spinner spinner-absolute"></div>
             </button>
@@ -33,20 +33,20 @@
             class:is-active={dropdownActive}>
             <li>
                 <button type="button"
-                    on:click|stopPropagation={prepend}>
+                    on:click|stopPropagation={sendToField('prepend')}>
                     Prepend Results
                 </button>
             </li>
             <li>
                 <button type="button"
-                    on:click|stopPropagation={append}>
+                    on:click|stopPropagation={sendToField('append')}>
                     Append Results
                 </button>
             </li>
-            {#if $redactor}
+            {#if $field.redactor}
                 <li>
                     <button type="button"
-                        on:click|stopPropagation={replace}>
+                        on:click|stopPropagation={sendToField('replace')}>
                         Replace with Results
                     </button>
                 </li>
@@ -62,93 +62,18 @@
 </div>
 
 <script context="module">
-    import snarkdown from '@bpmn-io/snarkdown';
-    import { redactor, field, isActive, isBusy, insertion } from '../../store';
+    import { field, isActive, isBusy, insertion } from '../../store';
 </script>
 
 <script>
     export let dropdownActive;
 
-    let input;
-
-    $field;
-
-    function prepare(content) {
-        if ($redactor) {
-            content = $redactor.cleaner.paragraphize(content);
-            content = snarkdown(content);
-            content = $redactor.cleaner.input(content);
-        }
-
-        return content;
-    }
-
-    function insert() {
-        if (!$insertion) {
-            return;
-        }
-
-        if ($redactor) {
-            $redactor.insertion.insertHtml(prepare($insertion));
-        } else if (input) {
-            input.value = prepare($insertion);
-        }
-
-        $isActive = false;
-    }
-
-    function append() {
-        if (!$insertion) {
-            return;
-        }
-
-        if ($redactor) {
-            $redactor.insertion.set([
-                $redactor.api('source.getCode'),
-                prepare($insertion)
-            ].join(`\n`));
-        } else if (input) {
-            input.value = [
-                input.value,
-                prepare($insertion)
-            ].join(`\n`);
-        }
-
-        $isActive = false;
-    }
-
-    function prepend() {
-        if (!$insertion) {
-            return;
-        }
-
-        if ($redactor) {
-            $redactor.insertion.set([
-                prepare($insertion),
-                $redactor.api('source.getCode')
-            ].join(`\n`));
-        } else if (input) {
-            input.value = [
-                prepare($insertion),
-                input.value
-            ].join(`\n`);
-        }
-
-        $isActive = false;
-    }
-
-    function replace() {
-        if (!$insertion) {
-            return;
-        }
-
-        if ($redactor) {
-            $redactor.insertion.set(prepare($insertion));
-        } else if (input) {
-            input.value = prepare($insertion);
-        }
-
-        $isActive = false;
+    function sendToField(method) {
+        return event => {
+            if ($field[method]($insertion)) {
+                $isActive = false;
+            }
+        };
     }
 
     function clipboard() {
@@ -163,8 +88,8 @@
     }
 
     function copy(event) {
-        event.clipboardData.setData('text/html', prepare($insertion));
-        event.clipboardData.setData('text/plain', prepare($insertion));
+        event.clipboardData.setData('text/html', field._prepare($insertion));
+        event.clipboardData.setData('text/plain', field._prepare($insertion));
         event.preventDefault();
     }
 </script>

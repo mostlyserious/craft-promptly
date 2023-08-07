@@ -1,7 +1,8 @@
-import * as store from './store';
-import FieldButton from './components/FieldButton';
+import init from './init';
 
 import.meta.glob('../{img,font,media}/**/*');
+
+const { Garnish, Neo, Craft } = window;
 
 (ready => {
     if (document.readyState !== 'loading') {
@@ -10,13 +11,17 @@ import.meta.glob('../{img,font,media}/**/*');
         document.addEventListener('DOMContentLoaded', ready);
     }
 })(() => {
-    const els = document.querySelectorAll('#content .field[data-type]');
+    init(document.querySelector('#content'));
 
-    Array.from(els).forEach(el => {
-        new FieldButton({
-            store,
-            target: el.querySelector('.input'),
-            props: { el }
+    Garnish.on(Craft.MatrixInput, 'afterInit', {}, event => {
+        event.target.on('blockAdded', event => {
+            init(event.$block.get(0));
+        });
+    });
+
+    Garnish.on(Neo.Input, 'afterInit', {}, event => {
+        event.target.on('add', event => {
+            init(event.block.$contentContainer.get(0));
         });
     });
 });

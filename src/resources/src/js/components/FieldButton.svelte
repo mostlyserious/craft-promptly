@@ -1,4 +1,4 @@
-{#if types.includes(field.type)}
+{#if field.isEnabled}
     <button type="button" class="btn" on:click={onClick}>
         {@html markup(icon, { class: 'icon' })}
         <span class="tooltip">Promptly</span>
@@ -23,12 +23,10 @@
 <script>
     export let el;
 
-    const types = [
-        'craft\\fields\\PlainText',
-        'craft\\redactor\\Field'
-    ];
-
+    // console.log(el.constructor.name);
     const field = new Field(el);
+
+    // console.log(field.attribute, field.type);
 
     // if (types.includes(el.dataset.type)) {
     //     $fields = Object.assign($fields, { [el.dataset.layoutElement]: el });
@@ -51,7 +49,7 @@
     .btn {
         @apply p-1.5 h-auto text-xs leading-none ml-auto rounded;
         @apply absolute top-1 right-1 transition;
-        @apply text-white bg-[#a635cf] hover:bg-[#661fe0];
+        @apply text-white bg-brand-purple hover:bg-brand-purple-dark;
         @apply opacity-0;
 
         & :global(.icon) {

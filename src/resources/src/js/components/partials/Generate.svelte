@@ -6,8 +6,6 @@
 </button>
 
 <script context="module">
-    /* global TextDecoderStream */
-
     import { writable, get } from 'svelte/store';
     import { keywords } from './GenerateWithKeywords';
     import { errors, isBusy, hasAccess } from '../../store';
@@ -15,6 +13,8 @@
     export const answer = writable('');
 
     export let controller = new AbortController();
+
+    const { Craft, TextDecoderStream } = window;
 
     function stream(endpoint, args = {}) {
         const hasAccessValue = get(hasAccess);
@@ -103,8 +103,6 @@
 </script>
 
 <script>
-    /* global Craft */
-
     import { active, preview } from '../../store';
 
     export let prompt = null;

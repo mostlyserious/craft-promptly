@@ -23,8 +23,6 @@
 </Modal>
 
 <script context="module">
-    /* global Craft */
-
     import Modal from './Modal';
     import Edit from './Edit/Edit';
     import Access from './Access/Access';
@@ -55,6 +53,8 @@
         }
     ];
 
+    const { Craft } = window;
+
     fetch(Craft.getActionUrl('promptly/prompts'))
         .then(res => res.json())
         .then(res => customPrompts.set(res.concat([ {
@@ -69,7 +69,7 @@
     let dropdownActive = false;
 
     $: $preview = $field
-        ? $field.value()
+        ? $field.value
         : '';
 
     $: if (!$isActive) {
@@ -88,7 +88,7 @@
     }
 
     $: $hasContent = $field
-        ? !$field.isEmpty()
+        ? !$field.isEmpty
         : null;
 </script>
 

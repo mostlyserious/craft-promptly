@@ -47,10 +47,10 @@
 </form>
 
 <script>
-    /* global Craft */
-
     import { actions } from './Actions';
     import { isBusy, active } from '../../store';
+
+    const { Craft } = window;
 
     const prompt = {
         label: '',

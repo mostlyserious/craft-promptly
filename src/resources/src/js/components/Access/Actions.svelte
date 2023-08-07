@@ -8,10 +8,10 @@
 {/if}
 
 <script>
-    /* global Craft */
-
     import Loading from '../partials/Loading';
     import { isBusy, hasAccess } from '../../store';
+
+    const { Craft } = window;
 
     function acceptTerms() {
         $isBusy = true;
