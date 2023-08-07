@@ -20,7 +20,7 @@ const { Garnish, Neo, Craft } = window;
     });
 
     Garnish.on(Neo.Input, 'afterInit', {}, event => {
-        event.target.on('add', event => {
+        event.target.on('addBlock', event => {
             init(event.block.$contentContainer.get(0));
         });
     });

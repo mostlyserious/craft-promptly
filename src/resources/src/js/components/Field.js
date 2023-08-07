@@ -11,19 +11,17 @@ export default class Field {
     ];
 
     static validAttributes = [
-        // 'title'
+        'title'
     ];
 
-    constructor(el) {
-        this.observer = new MutationObserver(this._onMutation);
-        this.el = el.querySelector('input, textarea');
-        this.uuid = el.dataset.layoutElement;
-        this.type = el.dataset.type;
-        this.attribute = el.dataset.attribute;
+    constructor(field) {
+        this.el = field.querySelector('input, textarea');
+        this.attribute = field.dataset.attribute;
+        this.uuid = field.dataset.layoutElement;
+        this.type = field.dataset.type;
+        this._redactor = null;
 
-        if (this.type === 'craft\\redactor\\Field') {
-            this.observer.observe(this.el, { attributes: true });
-        } else if (this.type === 'craft\\fields\\PlainText') {
+        if (this.type === 'craft\\fields\\PlainText') {
             this.el.style.paddingRight = '34px';
         }
     }
@@ -35,7 +33,7 @@ export default class Field {
 
     get value() {
         return this.redactor
-            ? this.redactor.source.getCode()
+            ? (this.redactor.source.getCode())
             : (this.el ? this.el.value : '');
     }
 
@@ -43,6 +41,16 @@ export default class Field {
         this.redactor
             ? !!(this.redactor.cleaner.getFlatText(this.value).trim())
             : !!(this.value);
+    }
+
+    get redactor() {
+        if (this._redactor) {
+            return this._redactor;
+        }
+
+        return this.el.dataset.redactorUuid && Field.$R
+            ? (this._redactor = Field.$R(this.el))
+            : null;
     }
 
     insert(value) {
@@ -53,8 +61,7 @@ export default class Field {
         if (this.redactor) {
             this.redactor.insertion.insertHtml(this._prepare(value));
         } else if (this.el) {
-            // TODO: Insert at cursor.
-            this.el.value = this._prepare(value);
+            this.insertAtCursor(this._prepare(value));
         }
 
         return true;
@@ -112,6 +119,20 @@ export default class Field {
         return true;
     }
 
+    insertAtCursor(value) {
+        const { selectionStart, selectionEnd } = this.el;
+
+        if (selectionStart || selectionStart === 0) {
+            this.el.value = [
+                this.el.value.substring(0, selectionStart),
+                value,
+                this.el.value.substring(selectionEnd, this.el.value.length)
+            ].join('');
+        } else {
+            this.el.value += value;
+        }
+    }
+
     _prepare(value) {
         if (this.redactor) {
             value = this.redactor.cleaner.paragraphize(value);
@@ -120,14 +141,5 @@ export default class Field {
         }
 
         return value;
-    }
-
-    _onMutation(mutations) {
-        mutations.forEach(mutation => {
-            if (mutation.attributeName === 'data-redactor-uuid') {
-                this.redactor = Field.$R ? Field.$R(mutation.target) : null;
-                delete this.observer;
-            }
-        });
     }
 }

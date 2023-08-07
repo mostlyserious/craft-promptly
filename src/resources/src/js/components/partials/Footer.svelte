@@ -13,7 +13,7 @@
                 class="btn disabled submit"
                 aria-disabled={$isBusy || !$insertion}
                 class:disabled={$isBusy || !$insertion}
-                on:click={sendToField($field.redactor ? 'insert' : 'replace')}>
+                on:click={sendToField('insert')}>
                 <div class="label">Insert Results</div>
                 <div class="spinner spinner-absolute"></div>
             </button>
@@ -43,14 +43,14 @@
                     Append Results
                 </button>
             </li>
-            {#if $field.redactor}
-                <li>
-                    <button type="button"
-                        on:click|stopPropagation={sendToField('replace')}>
-                        Replace with Results
-                    </button>
-                </li>
-            {/if}
+            <!-- {#if $field.redactor} -->
+            <li>
+                <button type="button"
+                    on:click|stopPropagation={sendToField('replace')}>
+                    Replace with Results
+                </button>
+            </li>
+            <!-- {/if} -->
             <li>
                 <button type="button"
                     on:click|stopPropagation={clipboard}>
@@ -69,11 +69,7 @@
     export let dropdownActive;
 
     function sendToField(method) {
-        return event => {
-            if ($field[method]($insertion)) {
-                $isActive = false;
-            }
-        };
+        return () => $isActive = !$field[method]($insertion);
     }
 
     function clipboard() {
@@ -84,6 +80,7 @@
         document.addEventListener('copy', copy);
         document.execCommand('copy');
         document.removeEventListener('copy', copy);
+
         $isActive = false;
     }
 
