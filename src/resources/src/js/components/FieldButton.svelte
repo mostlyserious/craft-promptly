@@ -23,10 +23,7 @@
 <script>
     export let el;
 
-    // console.log(el.constructor.name);
     const field = new Field(el);
-
-    // console.log(field.attribute, field.type);
 
     // if (types.includes(el.dataset.type)) {
     //     $fields = Object.assign($fields, { [el.dataset.layoutElement]: el });

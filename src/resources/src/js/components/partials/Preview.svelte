@@ -1,4 +1,4 @@
-{#if plainText}
+{#if !$field.isEmpty}
     <div class="wrapper"
         class:static={clientHeight <= 100}>
         <p class="label">Current Text</p>
@@ -23,11 +23,7 @@
 {/if}
 
 <script>
-    import { redactor, preview } from '../../store';
-
-    const plainText = $redactor
-        ? $redactor.cleaner.getFlatText($preview).trim()
-        : $preview;
+    import { field, preview } from '../../store';
 
     let expanded = false,
         clientHeight;

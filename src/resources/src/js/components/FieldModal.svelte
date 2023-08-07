@@ -68,7 +68,9 @@
 <script>
     let dropdownActive = false;
 
-    $: $preview = $field
+    $: $field ? $field.value : null;
+
+    $: $preview = $field && $isActive
         ? $field.value
         : '';
 

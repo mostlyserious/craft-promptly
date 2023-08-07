@@ -15,7 +15,7 @@ export default class Field {
     ];
 
     constructor(field) {
-        this.el = field.querySelector('input, textarea');
+        this.el = field.querySelector(':where(input, textarea):not([readonly])');
         this.attribute = field.dataset.attribute;
         this.uuid = field.dataset.layoutElement;
         this.type = field.dataset.type;
@@ -33,14 +33,18 @@ export default class Field {
 
     get value() {
         return this.redactor
-            ? (this.redactor.source.getCode())
-            : (this.el ? this.el.value : '');
+            ? this.redactor.source.getCode()
+            : this.el.value;
+    }
+
+    get textValue() {
+        return this.redactor
+            ? this.redactor.cleaner.getFlatText(this.value).trim()
+            : this.value;
     }
 
     get isEmpty() {
-        this.redactor
-            ? !!(this.redactor.cleaner.getFlatText(this.value).trim())
-            : !!(this.value);
+        return !this.textValue;
     }
 
     get redactor() {

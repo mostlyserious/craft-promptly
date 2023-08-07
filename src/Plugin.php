@@ -68,7 +68,7 @@ class Plugin extends BasePlugin
 
             if ($this->getSettings()->openAiKey && Craft::$app->user->identity) {
                 $this->initAssets();
-                $this->cleanupRedactor();
+                // $this->cleanupRedactor();
             }
         });
     }
