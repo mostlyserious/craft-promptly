@@ -5,7 +5,7 @@
                 {customPrompt.label}
             </SidebarItem>
             <hr>
-            {#each categories as action (action.handle)}
+            {#each actions as action (action.handle)}
                 <SidebarItem {action}>
                     {action.label}
                 </SidebarItem>
@@ -24,34 +24,16 @@
 
 <script context="module">
     import Modal from './Modal';
-    import Edit from './Edit/Edit';
     import Access from './Access/Access';
     import Footer from './partials/Footer';
-    import Brainstorm from './Brainstorm/Brainstorm';
+    import categories from '../data/categories';
     import SidebarItem from './partials/SidebarItem';
-    import CustomPrompt from './CustomPrompt/CustomPrompt';
     import { answer, controller } from './partials/Generate';
     import { actions as customPrompts } from './CustomPrompt/Actions';
     import { field, preview, category, isActive, isBusy, hasContent } from '../store';
 
-    export const customPrompt = {
-        label: '⚡ Custom Prompt',
-        handle: 'custom',
-        component: CustomPrompt
-    };
-
-    export const categories = [
-        {
-            label: '🧠 Brainstorm',
-            handle: 'brainstorm',
-            component: Brainstorm
-        },
-        {
-            label: '✍️ Edit',
-            handle: 'edit',
-            component: Edit
-        }
-    ];
+    export const customPrompt = categories.filter(category => category.handle === 'custom').pop();
+    export const actions = categories.filter(category => category.handle !== 'custom');
 
     const { Craft } = window;
 
@@ -81,12 +63,10 @@
         dropdownActive = false;
     }
 
-    $: {
-        if ($isActive && !$category) {
-            $category = $customPrompts.length > 1
-                ? customPrompt
-                : categories[0];
-        }
+    $: if ($isActive && !$category) {
+        $category = $customPrompts.length > 1
+            ? customPrompt
+            : categories[1];
     }
 
     $: $hasContent = $field

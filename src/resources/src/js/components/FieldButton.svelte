@@ -66,4 +66,8 @@
     :global(.field.hover > .input) > .btn {
         @apply opacity-100;
     }
+
+    :global(#content .field[data-type="craft\\ckeditor\\Field"]) .btn {
+        @apply top-11 !important;
+    }
 </style>
