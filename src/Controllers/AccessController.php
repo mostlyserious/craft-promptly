@@ -41,12 +41,10 @@ class AccessController extends BaseController
 
     public function actionFields()
     {
-        return $this->asJson(
-            array_values(
-                array_filter(
-                    Plugin::$plugin->settings->getEnabledFields()
-                )
-            )
-        );
+        $enabled_fields = Plugin::$plugin->settings->getEnabledFields();
+
+        return $this->asJson(is_array($enabled_fields)
+            ? array_values(array_filter($enabled_fields))
+            : null);
     }
 }
