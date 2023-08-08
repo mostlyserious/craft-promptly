@@ -55,7 +55,9 @@ export default class Field {
         }
 
         if (this.ckeditor) {
-            return markup(this.value, {}, true).textContent.trim();
+            return this.value.trim()
+                ? markup(this.value, {}, true).textContent.trim()
+                : '';
         }
 
         return this.value;
@@ -88,11 +90,9 @@ export default class Field {
             return null;
         }
 
-        const editor = this.field.querySelector('[contenteditable="true"]');
-
-        return editor && editor.ckeditorInstance
+        return (editor => editor && editor.ckeditorInstance
             ? (this._ckeditor = editor.ckeditorInstance)
-            : null;
+            : null)(this.field.querySelector('.ck[contenteditable="true"]'));
     }
 
     insert(value) {

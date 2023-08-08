@@ -2,8 +2,6 @@ import init from './init';
 
 import.meta.glob('../{img,font,media}/**/*');
 
-const { Garnish, Neo, Craft } = window;
-
 (ready => {
     if (document.readyState !== 'loading') {
         ready();
@@ -11,6 +9,8 @@ const { Garnish, Neo, Craft } = window;
         document.addEventListener('DOMContentLoaded', ready);
     }
 })(() => {
+    const { Garnish, Neo, Craft } = window;
+
     init(document.querySelector('#content'));
 
     Garnish.on(Craft.MatrixInput, 'afterInit', {}, event => {
