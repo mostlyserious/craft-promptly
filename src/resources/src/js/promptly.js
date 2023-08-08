@@ -1,4 +1,5 @@
 import init from './init';
+import Field from './components/Field';
 
 import.meta.glob('../{img,font,media}/**/*');
 
@@ -11,17 +12,25 @@ import.meta.glob('../{img,font,media}/**/*');
 })(() => {
     const { Garnish, Neo, Craft } = window;
 
-    init(document.querySelector('#content'));
+    fetch(Craft.getActionUrl('promptly/access/fields'))
+        .then(res => res.json())
+        .then(res => {
+            Field.enabledFields = res;
 
-    Garnish.on(Craft.MatrixInput, 'afterInit', {}, event => {
-        event.target.on('blockAdded', event => {
-            init(event.$block.get(0));
-        });
-    });
+            if (Field.enabledFields.length) {
+                init(document.querySelector('#content'));
 
-    Garnish.on(Neo.Input, 'afterInit', {}, event => {
-        event.target.on('addBlock', event => {
-            init(event.block.$contentContainer.get(0));
+                Garnish.on(Craft.MatrixInput, 'afterInit', {}, event => {
+                    event.target.on('blockAdded', event => {
+                        init(event.$block.get(0));
+                    });
+                });
+
+                Garnish.on(Neo.Input, 'afterInit', {}, event => {
+                    event.target.on('addBlock', event => {
+                        init(event.block.$contentContainer.get(0));
+                    });
+                });
+            }
         });
-    });
 });

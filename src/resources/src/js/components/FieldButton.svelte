@@ -1,4 +1,4 @@
-{#if field.isEnabled}
+{#if field.isValid && field.isEnabled}
     <button type="button" class="btn" on:click={onClick}>
         {@html markup(icon, { class: 'icon' })}
         <span class="tooltip">Promptly</span>

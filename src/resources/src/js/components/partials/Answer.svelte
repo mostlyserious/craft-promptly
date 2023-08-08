@@ -3,13 +3,13 @@
 </div>
 
 <script>
-    import { isBusy, redactor } from '../../store';
+    import { isBusy, field } from '../../store';
 
     export let content;
 
     function format(string) {
-        return $redactor
-            ? $redactor.cleaner.paragraphize(string)
+        return field.redactor
+            ? field.redactor.cleaner.paragraphize(string)
             : string;
     }
 </script>

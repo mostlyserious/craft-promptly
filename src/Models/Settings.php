@@ -32,7 +32,12 @@ class Settings extends Model
     public $organizationId = '';
 
     /**
-     * Gets the GPT model.
+     * @var array|null The list of enabled fields
+     */
+    public $enabledFields = null;
+
+    /**
+     * Retrieves the GPT model value.
      *
      * @return string
      */
@@ -42,7 +47,7 @@ class Settings extends Model
     }
 
     /**
-     * Gets the parsed OpenAI API key from the environment.
+     * Retrieves the parsed OpenAI API key from the environment.
      *
      * @return string
      */
@@ -52,7 +57,7 @@ class Settings extends Model
     }
 
     /**
-     * Gets the parsed Organization ID from the environment.
+     * Retrieves the parsed Organization ID from the environment.
      *
      * @return string
      */
@@ -62,7 +67,19 @@ class Settings extends Model
     }
 
     /**
+     * Retrieves the list of enabled fields.
+     *
+     * @return array|null
+     */
+    public function getEnabledFields(): array|null
+    {
+        return $this->enabledFields;
+    }
+
+    /**
      * Defines the behaviors for the Settings model.
+     *
+     * Currently only has the parser behavior that assists with parsing environment attributes.
      *
      * @return array
      */
@@ -77,7 +94,12 @@ class Settings extends Model
     }
 
     /**
-     * Defines the validation rules for the Settings model.
+     * Provides validation rules for the Settings model.
+     *
+     * The rules enforce:
+     * 1. `openAiKey` and `gptModel` are required.
+     * 2. `openAiKey`, `gptModel`, and `organizationId` are strings.
+     * 3. `gptModel` is within the specified range of acceptable values.
      *
      * @return array
      */

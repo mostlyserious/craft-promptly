@@ -3,6 +3,10 @@
 
 {% set config = craft.app.config.getConfigFromFile('promptly') %}
 
+{% set plainTextFields = craft.app.fields.getFieldsByType('craft\\fields\\PlainText') %}
+{% set redactorFields = craft.app.fields.getFieldsByType('craft\\redactor\\Field') %}
+{% set ckeditorFields = craft.app.fields.getFieldsByType('craft\\ckeditor\\Field') %}
+
 <div class="settings">
     {{ forms.autosuggestField({
         label: 'OpenAI API Key',
@@ -44,4 +48,81 @@
             { label: 'GPT-4', value: 'gpt-4' }
         ]
     }) }}
+
 </div>
+
+<hr>
+
+<div class="settings">
+    <h2>Enabled Fields</h2>
+    <h3>Core</h3>
+    {{ forms.lightswitch({
+        id: 'title',
+        name: 'enabledFields[]',
+        label: 'Title',
+        value: 'title',
+        on: settings.enabledFields is iterable
+            ? 'title' in settings.enabledFields
+            : true
+    }) }}
+
+    {% if plainTextFields|length %}
+        <h3>Plain Text</h3>
+        {% for field in plainTextFields %}
+            {{ forms.lightswitch({
+                id: field.handle,
+                name: 'enabledFields[]',
+                label: field.name,
+                value: field.handle,
+                on: settings.enabledFields is iterable
+                    ? field.handle in settings.enabledFields
+                    : true
+            }) }}
+        {% endfor %}
+    {% endif %}
+
+    {% if redactorFields|length %}
+        <h3>Redactor</h3>
+        {% for field in redactorFields %}
+            {{ forms.lightswitch({
+                id: field.handle,
+                name: 'enabledFields[]',
+                label: field.name,
+                value: field.handle,
+                on: settings.enabledFields is iterable
+                    ? field.handle in settings.enabledFields
+                    : true
+            }) }}
+        {% endfor %}
+    {% endif %}
+
+    {% if ckeditorFields|length %}
+        <h3>CKEditor</h3>
+        {% for field in ckeditorFields %}
+            {{ forms.lightswitch({
+                id: field.handle,
+                name: 'enabledFields[]',
+                label: field.name,
+                value: field.handle,
+                on: settings.enabledFields is iterable
+                    ? field.handle in settings.enabledFields
+                    : true
+            }) }}
+        {% endfor %}
+    {% endif %}
+</div>
+
+<style>
+    h3 {
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .lightswitch-inner-container {
+        border: none !important;
+    }
+
+    .lightswitch-inner-container span {
+        cursor: pointer !important;
+    }
+</style>

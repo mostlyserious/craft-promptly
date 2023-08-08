@@ -3,6 +3,7 @@
 namespace MostlySerious\Promptly\Controllers;
 
 use Craft;
+use MostlySerious\Promptly\Plugin;
 use MostlySerious\Promptly\Controllers\BaseController;
 use MostlySerious\Promptly\Records\PromptlyAccessRecord;
 
@@ -36,5 +37,16 @@ class AccessController extends BaseController
         return $this->asJson([
             'access' => $this->default_model
         ]);
+    }
+
+    public function actionFields()
+    {
+        return $this->asJson(
+            array_values(
+                array_filter(
+                    Plugin::$plugin->settings->getEnabledFields()
+                )
+            )
+        );
     }
 }

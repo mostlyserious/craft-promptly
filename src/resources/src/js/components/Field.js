@@ -8,6 +8,8 @@ export default class Field {
 
     static $CK = ClassicEditor;
 
+    static enabledFields = [];
+
     static validTypes = [
         'craft\\fields\\PlainText',
         'craft\\redactor\\Field',
@@ -19,11 +21,11 @@ export default class Field {
     ];
 
     constructor(field) {
-        this.field = field;
         this.el = field.querySelector(':where(input, textarea):not([readonly])');
         this.attribute = field.dataset.attribute;
-        this.uuid = field.dataset.layoutElement;
+        this.uid = field.dataset.layoutElement;
         this.type = field.dataset.type;
+        this.field = field;
         this._redactor = null;
         this._ckeditor = null;
 
@@ -33,6 +35,10 @@ export default class Field {
     }
 
     get isEnabled() {
+        return Field.enabledFields.includes(this.attribute);
+    }
+
+    get isValid() {
         return Field.validTypes.includes(this.type)
             || Field.validAttributes.includes(this.attribute);
     }
