@@ -8,7 +8,7 @@ export default class Field {
 
     static $CK = ClassicEditor;
 
-    static enabledFields = [];
+    static enabledFields = null;
 
     static validTypes = [
         'craft\\fields\\PlainText',
@@ -35,7 +35,8 @@ export default class Field {
     }
 
     get isEnabled() {
-        return Field.enabledFields.includes(this.attribute);
+        return Field.enabledFields === null
+            || Field.enabledFields.includes(this.attribute);
     }
 
     get isValid() {

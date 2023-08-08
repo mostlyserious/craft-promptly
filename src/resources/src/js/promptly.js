@@ -17,7 +17,7 @@ import.meta.glob('../{img,font,media}/**/*');
         .then(res => {
             Field.enabledFields = res;
 
-            if (Field.enabledFields.length) {
+            if (Field.enabledFields === null || Field.enabledFields.length) {
                 init(document.querySelector('#content'));
 
                 Garnish.on(Craft.MatrixInput, 'afterInit', {}, event => {
