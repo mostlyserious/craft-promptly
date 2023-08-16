@@ -49,8 +49,6 @@
                                 value = value.replace(/^data:\s*/, '').trim();
 
                                 if (done || value === '[DONE]') {
-                                    console.info('DONE');
-
                                     clearInterval(interval);
 
                                     return;

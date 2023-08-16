@@ -71,7 +71,7 @@ export default class Field {
     }
 
     get isEmpty() {
-        return !this.textValue;
+        return !this.textValue.trim();
     }
 
     get redactor() {

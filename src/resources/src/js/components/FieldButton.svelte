@@ -29,8 +29,10 @@
     //     $fields = Object.assign($fields, { [el.dataset.layoutElement]: el });
     // }
 
-    el.addEventListener('mouseenter', () => el.classList.add('hover'));
-    el.addEventListener('mouseleave', () => el.classList.remove('hover'));
+    if (field.isValid && field.isEnabled) {
+        el.addEventListener('mouseenter', () => el.classList.add('hover'));
+        el.addEventListener('mouseleave', () => el.classList.remove('hover'));
+    }
 
     function onClick() {
         store.field.set(field);
