@@ -79,7 +79,7 @@ export default class Field {
             return this._redactor;
         }
 
-        if (this.type !== 'craft\\ckeditor\\Field') {
+        if (this.type !== 'craft\\redactor\\Field') {
             return null;
         }
 
@@ -195,6 +195,22 @@ export default class Field {
             this.el.value += value;
         }
     }
+
+    // on(event, handler) {
+    //     if (this.redactor) {
+    //         this.redactor.container.getElement().get(0).addEventListener(event, handler);
+    //     } else {
+    //         this.el.addEventListener(event, handler);
+    //     }
+    // }
+
+    // off(event, handler) {
+    //     if (this.redactor) {
+    //         this.redactor.container.getElement().get(0).removeEventListener(event, handler);
+    //     } else {
+    //         this.el.removeEventListener(event, handler);
+    //     }
+    // }
 
     _prepare(value) {
         if (this.redactor) {
