@@ -1,11 +1,11 @@
-<Modal isOpen={$isActive === redactor.uuid}>
+<Modal isOpen={$isActive}>
     <div class="sidebar" slot="sidebar">
         <div class="sidebar-inner">
             <SidebarItem action={customPrompt}>
                 {customPrompt.label}
             </SidebarItem>
             <hr>
-            {#each categories as action (action.handle)}
+            {#each actions as action (action.handle)}
                 <SidebarItem {action}>
                     {action.label}
                 </SidebarItem>
@@ -23,38 +23,19 @@
 </Modal>
 
 <script context="module">
-    /* global Craft */
-
     import Modal from './Modal';
-    import Edit from './Edit/Edit';
-    import { setContext } from 'svelte';
     import Access from './Access/Access';
     import Footer from './partials/Footer';
-    import Brainstorm from './Brainstorm/Brainstorm';
+    import categories from '../data/categories';
     import SidebarItem from './partials/SidebarItem';
-    import CustomPrompt from './CustomPrompt/CustomPrompt';
     import { answer, controller } from './partials/Generate';
     import { actions as customPrompts } from './CustomPrompt/Actions';
-    import { category, isActive, isBusy, hasContent } from '../store';
+    import { field, preview, category, isActive, isBusy, hasContent } from '../store';
 
-    export const customPrompt = {
-        label: '⚡ Custom Prompt',
-        handle: 'custom',
-        component: CustomPrompt
-    };
+    export const customPrompt = categories.filter(category => category.handle === 'custom').pop();
+    export const actions = categories.filter(category => category.handle !== 'custom');
 
-    export const categories = [
-        {
-            label: '🧠 Brainstorm',
-            handle: 'brainstorm',
-            component: Brainstorm
-        },
-        {
-            label: '✍️ Edit',
-            handle: 'edit',
-            component: Edit
-        }
-    ];
+    const { Craft } = window;
 
     fetch(Craft.getActionUrl('promptly/prompts'))
         .then(res => res.json())
@@ -67,13 +48,13 @@
 </script>
 
 <script>
-    export let redactor;
-
-    const preview = redactor.source.getCode();
-
     let dropdownActive = false;
 
-    setContext('redactor', redactor);
+    $: $field ? $field.value : null;
+
+    $: $preview = $field && $isActive
+        ? $field.value
+        : '';
 
     $: if (!$isActive) {
         controller.abort();
@@ -82,13 +63,15 @@
         dropdownActive = false;
     }
 
-    $: if (!$category) {
-        $category = categories[0];
+    $: if ($isActive && !$category) {
+        $category = $customPrompts.length > 1
+            ? customPrompt
+            : categories[1];
     }
 
-    $: if ($isActive === redactor.uuid) {
-        $hasContent = !!redactor.cleaner.getFlatText(preview).trim();
-    }
+    $: $hasContent = $field
+        ? !$field.isEmpty
+        : null;
 </script>
 
 <style lang="postcss">

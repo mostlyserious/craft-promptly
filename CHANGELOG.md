@@ -1,5 +1,16 @@
 # Release Notes for Promptly
 
+## 1.2.0 - 2023-08-30
+### Added
+- Support for both Plain Text and [CKEditor](https://plugins.craftcms.com/ckeditor) fields
+- Ability to enable/disable Promptly on a per-field basis
+
+### Changed
+- Promptly no longer requires a plugin integration with [Redactor](https://plugins.craftcms.com/redactor)
+
+> **Note**
+> You should remove `"promptly"` from your redactor configs and delete `config/redactor/plugins/promptly.js`
+
 ## 1.1.1 - 2023-07-18
 ### Fixed
 - Missing feedback for empty content blocks in some cases.

@@ -29,14 +29,14 @@
 
 <script>
     import { answer } from './Generate';
-    import { customPrompt, categories } from '../FieldModal';
+    import { customPrompt, actions } from '../FieldModal';
     import { errors, active, category, screen } from '../../store';
 
     export let label;
     export let Actions;
     export let Panel;
 
-    const options = [ customPrompt, ...categories ];
+    const options = [ customPrompt, ...actions ];
 
     let prompt,
         selected;

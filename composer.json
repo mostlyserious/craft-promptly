@@ -2,7 +2,7 @@
     "name": "mostlyserious/craft-promptly",
     "description": "Revolutionize content creation in Craft by leveraging the power of AI, giving superpowers to your content creators to help them brainstorm and edit content with an AI assistant directly within Craft CMS.",
     "type": "craft-plugin",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "license": "proprietary",
     "keywords": [
         "craft",

@@ -6,9 +6,6 @@
 </button>
 
 <script context="module">
-    /* global TextDecoderStream */
-
-    import { getContext } from 'svelte';
     import { writable, get } from 'svelte/store';
     import { keywords } from './GenerateWithKeywords';
     import { errors, isBusy, hasAccess } from '../../store';
@@ -16,6 +13,8 @@
     export const answer = writable('');
 
     export let controller = new AbortController();
+
+    const { Craft, TextDecoderStream } = window;
 
     function stream(endpoint, args = {}) {
         const hasAccessValue = get(hasAccess);
@@ -50,8 +49,6 @@
                                 value = value.replace(/^data:\s*/, '').trim();
 
                                 if (done || value === '[DONE]') {
-                                    console.info('DONE');
-
                                     clearInterval(interval);
 
                                     return;
@@ -104,15 +101,10 @@
 </script>
 
 <script>
-    /* global Craft */
-
-    import { active } from '../../store';
+    import { active, preview } from '../../store';
 
     export let prompt = null;
     export let disabled;
-
-    const redactor = getContext('redactor');
-    const preview = redactor.api('source.getCode');
 
     let timeout;
 
@@ -120,7 +112,7 @@
         const data = {
             [Craft.csrfTokenName]: Craft.csrfTokenValue,
             prompt: prompt ? prompt : $active.prompt,
-            context: preview,
+            context: $preview,
             keywords: $keywords
         };
 

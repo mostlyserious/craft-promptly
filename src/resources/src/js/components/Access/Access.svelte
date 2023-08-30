@@ -1,18 +1,27 @@
 {#if $hasAccess}
     <slot></slot>
-{:else}
+{:else if !$isBusy}
     <svelte:component this={Base} label="" {Actions} {Panel} />
+{:else if !suspend}
+    <div class="center">
+        <Loading />
+    </div>
 {/if}
 
 <script>
-    /* global Craft */
-
     import Panel from './Panel';
     import Actions from './Actions';
     import Base from '../partials/Base';
+    import Loading from '../partials/Loading';
     import { isBusy, hasAccess, active } from '../../store';
 
+    const { Craft } = window;
+
+    let suspend = true;
+
     $active = true;
+
+    setTimeout(() => suspend = false, 200);
 
     if (!$hasAccess) {
         $isBusy = true;
@@ -25,3 +34,9 @@
     }
 
 </script>
+
+<style lang="postcss">
+    .center {
+        @apply absolute transform inset-center w-3/4;
+    }
+</style>

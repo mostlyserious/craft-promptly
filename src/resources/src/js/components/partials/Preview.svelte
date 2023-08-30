@@ -1,18 +1,17 @@
-{#if plainText}
+{#if !$field.isEmpty}
     <div class="wrapper"
-        class:static={inner <= 100}>
+        class:static={clientHeight <= 100}>
         <p class="label">Current Text</p>
         <div class="preview"
-            style:height={inner > 100 ? (expanded ? `${inner}px` : '100px') : 'auto'}
-            bind:clientHeight={outer}>
+            style:height={clientHeight > 100 ? (expanded ? `${clientHeight}px` : '100px') : 'auto'}>
             <div class="preview-content"
-                bind:clientHeight={inner}>
-                {@html preview}
+                bind:clientHeight>
+                {@html $preview}
             </div>
         </div>
     </div>
 
-    {#if inner > 100}
+    {#if clientHeight > 100}
         <button type="button"
             class="link"
             on:click={() => expanded = !expanded}>
@@ -24,15 +23,10 @@
 {/if}
 
 <script>
-    import { getContext } from 'svelte';
-
-    const redactor = getContext('redactor');
-    const preview = redactor.source.getCode();
-    const plainText = redactor.cleaner.getFlatText(preview).trim();
+    import { field, preview } from '../../store';
 
     let expanded = false,
-        outer,
-        inner;
+        clientHeight;
 </script>
 
 <style lang="postcss">
@@ -57,7 +51,8 @@
         & .preview-content {
             @apply prose prose-sm w-full max-w-full leading-5 min-h-0 h-max text-slate-500;
 
-            & :global(p:last-of-type) {
+            & :global(p:last-of-type),
+            & :global(h2:last-of-type) {
                 @apply mb-0;
             }
         }

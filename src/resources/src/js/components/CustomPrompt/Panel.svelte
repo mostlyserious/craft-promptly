@@ -40,8 +40,6 @@
 {/if}
 
 <script>
-    /* global Craft */
-
     import { actions } from './Actions';
     import NewPrompt from './NewPrompt';
     import Errors from '../partials/Errors';
@@ -50,6 +48,8 @@
     import snarkdown from '@bpmn-io/snarkdown';
     import { isBusy, insertion, active } from '../../store';
     import Generate, { answer } from '../partials/Generate';
+
+    const { Craft } = window;
 
     let confirmDeletion = false;
 
