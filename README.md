@@ -4,8 +4,6 @@
 
 Revolutionize content creation in Craft by leveraging the power of AI, giving superpowers to your content creators to help them brainstorm and edit content with an AI assistant directly within Craft CMS.
 
-> ‼️ For this initial release Promptly works only as a plugin for [Redactor](https://plugins.craftcms.com/redactor) in Craft CMS, but expanding Promptly to other field types is a top priority.
-
 Looking to utilize Promptly on your project? Read our [blog post](https://www.mostlyserious.io/news-updates/promptly-bringing-chatgpt-to-craft-cms) on using Promptly.
 
 ## Features
@@ -61,23 +59,6 @@ composer require mostlyserious/craft-promptly
 php craft plugin/install promptly
 ```
 
-### Add to Redactor Field
-
-**Config File**  
-You can save custom Redactor configs as `.json` files in `/config/redactor` and add `"promptly"` to the array of `"plugins"` there.
-
-**Inline Field Settings**
-
-![](media/redactor-config.png)
-
-```json
-{
-    "plugins": [
-        "promptly"
-    ]
-}
-```
-
 ---
 
 ## Overriding Plugin Settings
@@ -111,7 +92,6 @@ With the Promptly plugin, you'll have two separate costs: licensing for the plug
 ## Short-Term Roadmap
 * Adding tests
 * Code-base refactoring & bug fixes
-* Expanding functionality beyond Redactor
 * Collecting community feedback
 * Improved accessibility
 
