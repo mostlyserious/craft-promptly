@@ -1,6 +1,6 @@
 # Release Notes for Promptly
 
-## 1.2.0 - 2023-00-00
+## 1.2.0 - 2023-08-30
 ### Added
 - Support for both Plain Text and [CKEditor](https://plugins.craftcms.com/ckeditor) fields
 - Ability to enable/disable Promptly on a per-field basis
