@@ -84,7 +84,11 @@
             fetch(endpoint, args)
                 .then(res => res.json())
                 .then(res => {
-                    queue.push(res.choices.shift());
+                    if (res.error) {
+                        queue.push(res);
+                    } else {
+                        queue.push(res.choices.shift());
+                    }
 
                     if (queue.length === 1) {
                         queueHandler();
@@ -139,6 +143,8 @@
             }
 
             if (value) {
+                console.log(value)
+
                 if (value.error) {
                     unsubscribe();
                     controller.abort();
