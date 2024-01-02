@@ -1,5 +1,13 @@
 # Release Notes for Promptly
 
+## 1.2.2 - 2024-01-02
+### Fixed
+- Fixed cases where OpenAI errors were not being reported to the user.
+
+## 1.2.1 - 2023-08-30
+### Fixed
+- Update README.md
+
 ## 1.2.0 - 2023-08-30
 ### Added
 - Support for both Plain Text and [CKEditor](https://plugins.craftcms.com/ckeditor) fields
