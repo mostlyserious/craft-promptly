@@ -10,6 +10,7 @@ use craft\helpers\UrlHelper;
 use craft\events\PluginEvent;
 use craft\base\Plugin as BasePlugin;
 use MostlySerious\Promptly\Models\Settings;
+use MostlySerious\Promptly\Migrations\Install;
 
 /**
  * Class Plugin
@@ -54,9 +55,9 @@ class Plugin extends BasePlugin
         ]);
 
         Craft::$app->onInit(function () {
+            Install::ensure(); // WTF
             if ($this->getSettings()->openAiKey && Craft::$app->user->identity) {
                 $this->initAssets();
-                // $this->cleanupRedactor();
             }
         });
     }
@@ -118,20 +119,6 @@ class Plugin extends BasePlugin
             } else {
                 $view->registerAssetBundle(Assets::class);
             }
-        }
-    }
-
-    /**
-     * Initialize Redactor plugin.
-     */
-    protected function cleanupRedactor()
-    {
-        $redactor_config = sprintf('%s/config/redactor', CRAFT_BASE_PATH);
-        $redactor_plugins = sprintf('%s/plugins', $redactor_config);
-        $redactor_plugin_file = sprintf('%s/promptly.js', $redactor_plugins);
-
-        if (is_file($redactor_plugin_file)) {
-            unlink($redactor_plugin_file);
         }
     }
 

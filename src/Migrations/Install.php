@@ -10,7 +10,7 @@ class Install extends Migration
 {
     public static function ensure()
     {
-        return (new static)->safeUp();
+        return (new static())->safeUp();
     }
     /**
      * @inheritdoc
