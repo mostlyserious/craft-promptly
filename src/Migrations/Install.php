@@ -1,6 +1,6 @@
 <?php
 
-namespace MostlySerious\Promptly\Migrations;
+namespace MostlySerious\Promptly\migrations;
 
 use craft\db\Migration;
 use MostlySerious\Promptly\Records\PromptlyAccessRecord;
@@ -8,10 +8,6 @@ use MostlySerious\Promptly\Records\PromptlyCustomPromptRecord;
 
 class Install extends Migration
 {
-    public static function ensure()
-    {
-        return (new static())->safeUp();
-    }
     /**
      * @inheritdoc
      */

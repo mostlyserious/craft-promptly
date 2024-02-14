@@ -10,7 +10,6 @@ use craft\helpers\UrlHelper;
 use craft\events\PluginEvent;
 use craft\base\Plugin as BasePlugin;
 use MostlySerious\Promptly\Models\Settings;
-use MostlySerious\Promptly\Migrations\Install;
 
 /**
  * Class Plugin
@@ -55,7 +54,6 @@ class Plugin extends BasePlugin
         ]);
 
         Craft::$app->onInit(function () {
-            Install::ensure(); // WTF
             if ($this->getSettings()->openAiKey && Craft::$app->user->identity) {
                 $this->initAssets();
             }
